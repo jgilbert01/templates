@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.UpdateItem
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-bff-service-stg-entities\",\"Key\":{\"pk\":{\"S\":\"00000000-0000-0000-0000-000000000000\"},\"sk\":{\"S\":\"thing\"}},\"ExpressionAttributeNames\":{\"#timestamp\":\"timestamp\",\"#name\":\"name\",\"#description\":\"description\",\"#elements\":\"elements\",\"#discriminator\":\"discriminator\",\"#deleted\":\"deleted\",\"#latched\":\"latched\",\"#ttl\":\"ttl\",\"#awsregion\":\"awsregion\"},\"ExpressionAttributeValues\":{\":timestamp\":{\"N\":\"1653877763001\"},\":name\":{\"S\":\"thing0\"},\":description\":{\"S\":\"This is thing zero.\"},\":discriminator\":{\"S\":\"thing\"},\":ttl\":{\"N\":\"1656728963\"},\":awsregion\":{\"S\":\"us-west-2\"}},\"UpdateExpression\":\"SET #timestamp = :timestamp, #name = :name, #description = :description, #discriminator = :discriminator, #ttl = :ttl, #awsregion = :awsregion REMOVE #elements, #deleted, #latched\",\"ReturnValues\":\"ALL_NEW\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Fri, 22 Jul 2022 14:26:37 GMT
+content-type: application/x-amz-json-1.0
+content-length: 268
+connection: keep-alive
+x-amzn-requestid: IVI9D95430VVS70H35BEQ2JIOJVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 1378103546
+
+{"Attributes":{"timestamp":{"N":"1653877763001"},"awsregion":{"S":"us-west-2"},"sk":{"S":"thing"},"ttl":{"N":"1656728963"},"discriminator":{"S":"thing"},"description":{"S":"This is thing zero."},"pk":{"S":"00000000-0000-0000-0000-000000000000"},"name":{"S":"thing0"}}}

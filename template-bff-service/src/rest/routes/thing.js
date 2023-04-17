@@ -1,3 +1,8 @@
+export const queryThings = (req, res) => req.namespace.models.thing
+  .query({ ...req.params, ...req.query })
+  .then((response) => res.status(200)
+    .json(response));
+
 export const getThing = (req, res) => req.namespace.models.thing
   .get(req.params.id)
   .then((data) => res.status(200).json(data));

@@ -46,15 +46,13 @@ class Connector {
     tableName,
     timeout = Number(process.env.DYNAMODB_TIMEOUT) || Number(process.env.TIMEOUT) || 1000,
   ) {
-    this.debug = debug;
+    this.debug = (msg) => debug('%j', msg);
     this.tableName = tableName || /* istanbul ignore next */ 'undefined';
     this.db = new DynamoDB.DocumentClient({
       httpOptions: {
         timeout,
-        // agent: sslAgent,
       },
-      logger: { log: /* istanbul ignore next */ (msg) => this.debug(msg) },
-      convertEmptyValues: true,
+      logger: { log: /* istanbul ignore next */ (msg) => debug('%s', msg.replace(/\n/g, '\r')) },
     });
   }
 
@@ -68,6 +66,12 @@ class Connector {
     return this.db.update(params).promise()
       .tap(this.debug)
       .tapCatch(this.debug);
+  }
+
+  batchUpdate(batch) {
+    return Promise.all(
+      batch.map((req) => this.update(req.key, req.inputParams)),
+    );
   }
 
   get(id) {
@@ -88,6 +92,43 @@ class Connector {
       .tapCatch(this.debug)
       .then((data) => data.Items);
     // TODO assert data.LastEvaluatedKey
+  }
+
+  query({
+    index, keyName, keyValue, last, ScanIndexForward,
+    FilterExpression,
+    ExpressionAttributeNames = {},
+    ExpressionAttributeValues = {},
+  }) {
+    const { tableName, db } = this;
+    const params = {
+      TableName: tableName,
+      IndexName: index,
+      ExclusiveStartKey: last ? JSON.parse(Buffer.from(last, 'base64').toString()) : undefined,
+      KeyConditionExpression: '#keyName = :keyName', // and begins_with(#rangeName, :rangeBeginsWithValue)
+      ExpressionAttributeNames: {
+        '#keyName': keyName,
+        // '#rangeName': rangeName,
+        ...ExpressionAttributeNames,
+      },
+      ExpressionAttributeValues: {
+        ':keyName': keyValue,
+        // ':rangeBeginsWithValue': rangeBeginWithValue,
+        ...ExpressionAttributeValues,
+      },
+      FilterExpression,
+      ScanIndexForward,
+    };
+
+    return db.query(params).promise()
+      .then((data) => ({
+        last: data.LastEvaluatedKey
+          ? Buffer.from(JSON.stringify(data.LastEvaluatedKey)).toString('base64')
+          : undefined,
+        data: data.Items,
+      }));
+    // TODO recurse when there is a LastEvaluatedKey and
+    //      we are below some minimum Items size
   }
 }
 

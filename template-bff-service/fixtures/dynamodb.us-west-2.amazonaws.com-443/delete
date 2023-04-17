@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.UpdateItem
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-bff-service-stg-entities\",\"Key\":{\"pk\":{\"S\":\"00000000-0000-0000-0000-000000000000\"},\"sk\":{\"S\":\"thing\"}},\"ExpressionAttributeNames\":{\"#discriminator\":\"discriminator\",\"#deleted\":\"deleted\",\"#lastModifiedBy\":\"lastModifiedBy\",\"#latched\":\"latched\",\"#ttl\":\"ttl\",\"#timestamp\":\"timestamp\",\"#awsregion\":\"awsregion\"},\"ExpressionAttributeValues\":{\":discriminator\":{\"S\":\"thing\"},\":deleted\":{\"BOOL\":true},\":lastModifiedBy\":{\"S\":\"offlineContext_authorizer_principalId\"},\":ttl\":{\"N\":\"1654828163\"},\":timestamp\":{\"N\":\"1653877763001\"},\":awsregion\":{\"S\":\"us-west-2\"}},\"UpdateExpression\":\"SET #discriminator = :discriminator, #deleted = :deleted, #lastModifiedBy = :lastModifiedBy, #ttl = :ttl, #timestamp = :timestamp, #awsregion = :awsregion REMOVE #latched\",\"ReturnValues\":\"ALL_NEW\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Mon, 30 May 2022 02:33:00 GMT
+content-type: application/x-amz-json-1.0
+content-length: 405
+connection: keep-alive
+x-amzn-requestid: 9SLDVR3NK705GD4S6V4CFLO4QNVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 2271421273
+
+{"Attributes":{"deleted":{"BOOL":true},"timestamp":{"N":"1653877763001"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1654828163"},"sk":{"S":"thing"},"discriminator":{"S":"thing"},"lastModifiedBy":{"S":"offlineContext_authorizer_principalId"},"description":{"S":"This is thing zero."},"id":{"S":"00000000-0000-0000-0000-000000000000"},"pk":{"S":"00000000-0000-0000-0000-000000000000"},"name":{"S":"thing0"}}}

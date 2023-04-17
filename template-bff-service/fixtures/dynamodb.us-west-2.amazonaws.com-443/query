@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.Query
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-bff-service-stg-entities\",\"IndexName\":\"gsi1\",\"KeyConditionExpression\":\"#keyName = :keyName\",\"ExpressionAttributeNames\":{\"#keyName\":\"discriminator\"},\"ExpressionAttributeValues\":{\":keyName\":{\"S\":\"thing\"}}}
+
+HTTP/1.1 200 OK
+server: Server
+date: Mon, 30 May 2022 02:30:59 GMT
+content-type: application/x-amz-json-1.0
+content-length: 405
+connection: keep-alive
+x-amzn-requestid: L27G0BJKANBJ5AHJ97FLE3O8DBVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 3162530313
+
+{"Count":1,"Items":[{"timestamp":{"N":"1653877763001"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1656728963"},"sk":{"S":"thing"},"discriminator":{"S":"thing"},"lastModifiedBy":{"S":"offlineContext_authorizer_principalId"},"id":{"S":"00000000-0000-0000-0000-000000000000"},"description":{"S":"This is thing zero."},"pk":{"S":"00000000-0000-0000-0000-000000000000"},"name":{"S":"thing0"}}],"ScannedCount":1}

@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.UpdateItem
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-bff-service-stg-entities\",\"Key\":{\"pk\":{\"S\":\"2022060400\"},\"sk\":{\"S\":\"job\"}},\"ExpressionAttributeNames\":{\"#discriminator\":\"discriminator\",\"#ttl\":\"ttl\",\"#awsregion\":\"awsregion\",\"#time\":\"time\"},\"ExpressionAttributeValues\":{\":discriminator\":{\"S\":\"job\"},\":ttl\":{\"N\":\"1657152303\"},\":awsregion\":{\"S\":\"us-west-2\"},\":time\":{\"S\":\"2022-06-04T00:05:03Z\"}},\"UpdateExpression\":\"SET #discriminator = :discriminator, #ttl = :ttl, #awsregion = :awsregion, #time = :time\",\"ReturnValues\":\"ALL_NEW\",\"ConditionExpression\":\"attribute_not_exists(pk)\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Fri, 05 Aug 2022 16:44:27 GMT
+content-type: application/x-amz-json-1.0
+content-length: 176
+connection: keep-alive
+x-amzn-requestid: P0TL0PU5S16D0C69MRDAQ3OMDNVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 1931297630
+
+{"Attributes":{"awsregion":{"S":"us-west-2"},"sk":{"S":"job"},"ttl":{"N":"1657152303"},"discriminator":{"S":"job"},"time":{"S":"2022-06-04T00:05:03Z"},"pk":{"S":"2022060400"}}}

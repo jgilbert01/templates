@@ -1,8 +1,11 @@
 import { updateExpression, timestampCondition } from 'aws-lambda-stream';
+import invert from 'lodash/invert';
 
 import {
-  now, ttl, aggregateMapper, mapper,
+  now, ttl, deletedFilter, aggregateMapper, mapper,
 } from '../utils';
+
+import * as Element from './element';
 
 export const DISCRIMINATOR = 'thing';
 
@@ -11,23 +14,39 @@ export const MAPPER = mapper();
 const AGGREGATE_MAPPER = aggregateMapper({
   aggregate: DISCRIMINATOR,
   cardinality: {
+    [Element.ALIAS]: 999,
   },
   mappers: {
     [DISCRIMINATOR]: MAPPER,
+    [Element.DISCRIMINATOR]: Element.MAPPER,
   },
 });
 
 class Model {
-  constructor(
+  constructor({
     debug,
     connector,
-    username = 'system',
-    claims,
-  ) {
+    claims = { username: 'system' },
+  } = {}) {
     this.debug = debug;
     this.connector = connector;
-    this.username = username;
     this.claims = claims;
+  }
+
+  query({ last /* more params here */ }) {
+    return this.connector
+      .query({
+        index: 'gsi1',
+        keyName: 'discriminator',
+        keyValue: DISCRIMINATOR,
+        last,
+      })
+      .then(async (response) => ({
+        ...response,
+        data: await Promise.all(response.data
+          .filter(deletedFilter)
+          .map((e) => MAPPER(e))),
+      }));
   }
 
   get(id) {
@@ -36,23 +55,55 @@ class Model {
   }
 
   save(id, input) {
+    const { elements, ...thing } = input;
     const timestamp = now();
+    const lastModifiedBy = this.claims.username;
+    const deleted = null;
+    const latched = null;
+    const _ttl = ttl(timestamp, 33);
+    const awsregion = process.env.AWS_REGION;
 
-    return this.connector.update(
+    return this.connector.batchUpdate([
       {
-        pk: id,
-        sk: DISCRIMINATOR,
+        key: {
+          pk: id,
+          sk: DISCRIMINATOR,
+        },
+        inputParams: {
+          ...thing,
+          discriminator: DISCRIMINATOR,
+          timestamp,
+          lastModifiedBy,
+          deleted,
+          latched,
+          ttl: _ttl,
+          awsregion,
+        },
       },
-      {
-        discriminator: DISCRIMINATOR,
-        lastModifiedBy: this.username,
-        deleted: null,
-        latched: null,
-        ttl: ttl(timestamp, 33),
-        ...input,
-        timestamp,
-      },
-    );
+      // elements are optional
+      // they can be added/updated here but not deleted
+      // they must be deleted individually
+      ...(elements || []).map((d) => {
+        const { id: elementId, ...element } = d;
+
+        return {
+          key: {
+            pk: id.toString(),
+            sk: `${Element.ALIAS}|${elementId}`,
+          },
+          inputParams: {
+            lastModifiedBy,
+            timestamp,
+            ...element,
+            discriminator: Element.DISCRIMINATOR,
+            deleted,
+            latched,
+            ttl: _ttl,
+            awsregion,
+          },
+        };
+      }),
+    ]);
   }
 
   delete(id) {
@@ -65,10 +116,11 @@ class Model {
       {
         discriminator: DISCRIMINATOR,
         deleted: true,
-        lastModifiedBy: this.username,
+        lastModifiedBy: this.claims.username,
         latched: null,
         ttl: ttl(timestamp, 11),
         timestamp,
+        awsregion: process.env.AWS_REGION,
       },
     );
   }
@@ -76,24 +128,50 @@ class Model {
 
 export default Model;
 
+const STATUS_EVENT_MAP = {
+  SUBMITTED: 'thing-submitted',
+  RESUBMITTED: 'thing-resubmitted',
+  REJECTED: 'thing-rejected',
+  APPROVED: 'thing-approved',
+};
+
+const EVENT_STATUS_MAP = invert(STATUS_EVENT_MAP);
+
+const OUTCOME_STATUS_MAP = {
+  resubmitted: 'RESUBMITTED',
+  rejected: 'REJECTED',
+  approved: 'APPROVED',
+};
+
 export const toUpdateRequest = (uow) => ({
   Key: {
     pk: uow.event.thing.id,
     sk: DISCRIMINATOR,
   },
   ...updateExpression({
-    ...uow.event.thing, // TODO minus id, others ???
+    ...uow.event.thing,
+    status: EVENT_STATUS_MAP[uow.event.type] || uow.event.thing.status,
     discriminator: DISCRIMINATOR,
-    lastModifiedBy: 'system',
+    lastModifiedBy: uow.event.thing.lastModifiedBy || 'system',
     timestamp: uow.event.timestamp,
     deleted: uow.event.type === 'thing-deleted' ? true : null,
     latched: true,
     ttl: ttl(uow.event.timestamp, 33),
+    awsregion: process.env.AWS_REGION,
   }),
   ...timestampCondition(),
 });
 
-export const toEvent = async (uow) => ({
-  thing: await MAPPER(uow.event.raw.new),
-  raw: undefined,
-});
+export const toEvent = async (uow) => {
+  const data = uow.event.raw.new || /* istanbul ignore next */ uow.event.raw.old;
+  const records = uow.queryResponse.map((r) => (r.discriminator === DISCRIMINATOR ? data : r));
+  const thing = await AGGREGATE_MAPPER(records);
+  return {
+    type: uow.event.type === 'thing-deleted'
+      ? /* istanbul ignore next */ uow.event.type
+      : STATUS_EVENT_MAP[data.status] || /* istanbul ignore next */ uow.event.type,
+    timestamp: data.timestamp || uow.event.timestamp,
+    thing,
+    raw: undefined,
+  };
+};
