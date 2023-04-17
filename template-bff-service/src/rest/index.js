@@ -1,44 +1,74 @@
-import { debug as d } from 'debug';
-
 import Connector from '../connectors/dynamodb';
-import Model from '../models/thing';
-import { getThing, saveThing, deleteThing } from './routes/thing';
-import { getUsername, getClaims/* , forRole */ } from '../utils';
+import ThingModel from '../models/thing';
+import ElementModel from '../models/element';
+import {
+  queryThings, getThing, saveThing, deleteThing,
+} from './routes/thing';
+import {
+  saveElement, deleteElement,
+} from './routes/element';
+import {
+  debug,
+  cors,
+  getClaims/* , forRole */,
+  errorHandler,
+  // serializer,
+} from '../utils';
 
-const api = require('lambda-api')();
-
-api.use((req, res, next) => {
-  res.cors();
-  next();
+const api = require('lambda-api')({
+  // isBase64: true,
+  // headers: {
+  //   'content-encoding': ['gzip'],
+  // },
+  // serializer: (body) => serializer(body),
+  logger: {
+    level: 'trace',
+    access: true,
+    detail: true,
+    stack: true,
+  },
 });
 
-api.get('/things/:id', getThing);
-api.put('/things/:id', /* forRole('power'), */ saveThing);
-api.delete('/things/:id', /* forRole('admin'), */ deleteThing);
-
-export const handle = async (event, context) => { // eslint-disable-line import/prefer-default-export
-  const debug = d(`handler${event.path.split('/').join(':')}`);
-  debug('event: %j', event);
-  // debug(`ctx: %j`, context);
-  // debug(`env: %j`, process.env);
-
-  const claims = getClaims(event.requestContext);
-  const username = getUsername(event.requestContext);
+const models = (req, res, next) => {
+  const claims = getClaims(req.requestContext);
+  const connector = new Connector(
+    req.namespace.debug,
+    process.env.ENTITY_TABLE_NAME,
+  );
 
   api.app({
-    debug,
+    debug: req.namespace.debug,
     models: {
-      thing: new Model(
-        debug,
-        new Connector(
-          debug,
-          process.env.ENTITY_TABLE_NAME,
-        ),
-        username,
+      thing: new ThingModel({
+        debug: req.namespace.debug,
+        connector,
         claims,
-      ),
+      }),
+      element: new ElementModel({
+        debug: req.namespace.debug,
+        connector,
+        claims,
+      }),
     },
   });
 
-  return api.run(event, context);
+  return next();
 };
+
+api.use(cors);
+api.use(debug(api));
+api.use(errorHandler);
+api.use(models);
+
+['', `/api-${process.env.PROJECT}`]
+  .forEach((prefix) => api.register((api) => { // eslint-disable-line no-shadow
+    api.get('/things', queryThings);
+    api.get('/things/:id', getThing);
+    api.put('/things/:id', /* forRole('power'), */ saveThing);
+    api.delete('/things/:id', /* forRole('admin'), */ deleteThing);
+    api.put('/things/:id/elements/:elementId', /* forRole('power'), */ saveElement);
+    api.delete('/things/:id/elements/:elementId', /* forRole('admin'), */ deleteElement);
+  }, { prefix }));
+
+// eslint-disable-next-line import/prefer-default-export
+export const handle = async (event, context) => api.run(event, context);

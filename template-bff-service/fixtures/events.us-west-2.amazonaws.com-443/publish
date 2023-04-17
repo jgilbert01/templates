@@ -1,0 +1,13 @@
+POST /
+content-type: application/x-amz-json-1.1
+x-amz-target: AWSEvents.PutEvents
+host: events.us-west-2.amazonaws.com
+body: {\"Entries\":[{\"EventBusName\":\"template-event-hub-stg-bus\",\"Source\":\"custom\",\"DetailType\":\"thing-created\",\"Detail\":\"{\\\"id\\\":\\\"a24f9cdaec8ead2781353ef13e942f42\\\",\\\"type\\\":\\\"thing-created\\\",\\\"partitionKey\\\":\\\"00000000-0000-0000-0000-000000000000\\\",\\\"timestamp\\\":1600349040394,\\\"tags\\\":{\\\"account\\\":\\\"dev\\\",\\\"region\\\":\\\"us-west-2\\\",\\\"stage\\\":\\\"stg\\\",\\\"source\\\":\\\"template-bff-service\\\",\\\"functionname\\\":\\\"undefined\\\",\\\"pipeline\\\":\\\"t1\\\",\\\"skip\\\":true},\\\"thing\\\":{\\\"lastModifiedBy\\\":\\\"offlineContext_authorizer_principalId\\\",\\\"timestamp\\\":1600349040394,\\\"id\\\":\\\"00000000-0000-0000-0000-000000000000\\\"}}\"}]}
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 3826f1aa-07f0-487c-8a4c-85b1b53da5e4
+content-type: application/x-amz-json-1.1
+content-length: 85
+date: Fri, 08 Jul 2022 20:14:03 GMT
+
+{"Entries":[{"EventId":"b5e62bfb-0266-0b7c-d5a5-11dab15739c1"}],"FailedEntryCount":0}

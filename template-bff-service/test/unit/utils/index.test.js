@@ -3,8 +3,15 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import {
-  now, mapper, aggregateMapper, DEFAULT_OMIT_FIELDS, sortKeyTransform, deletedFilter, getUsername, getClaims, getUserGroups, forRole,
+  now, errorHandler, mapper, aggregateMapper, DEFAULT_OMIT_FIELDS, sortKeyTransform, deletedFilter,
 } from '../../../src/utils';
+
+class Response {
+  constructor() {
+    this.status = sinon.stub().returns(this);
+    this.json = sinon.spy((data) => data);
+  }
+}
 
 describe('utils/index.js', () => {
   afterEach(sinon.restore);
@@ -14,77 +21,19 @@ describe('utils/index.js', () => {
     expect(now()).to.equal(1600144863435);
   });
 
-  it('should get claims', () => {
-    expect(getClaims({
-      authorizer: {
-        claims: {
-          'cognito:username': 'offlineContext_authorizer_principalId',
-        },
-      },
-    })).to.deep.equal({
-      'cognito:username': 'offlineContext_authorizer_principalId',
-    });
-
-    expect(getClaims({ authorizer: {} })).to.deep.equal({});
-    expect(getClaims({})).to.deep.equal({});
-  });
-
-  it('should get username', () => {
-    expect(getUsername({
-      authorizer: {
-        claims: {
-          'cognito:username': 'offlineContext_authorizer_principalId',
-        },
-      },
-    })).to.equal('offlineContext_authorizer_principalId');
-  });
-
-  it('should get user grouos', () => {
-    expect(getUserGroups({
-      authorizer: {
-        claims: {
-          'cognito:groups': 'r1,r2',
-        },
-      },
-    })).to.deep.equal(['r1', 'r2']);
-  });
-
-  it('should check role to succeed', () => {
-    const req = {
-      requestContext: {
-        authorizer: {
-          claims: {
-            'cognito:groups': 'r1,r2',
-          },
-        },
-      },
-    };
-    const resp = {};
+  it('should handle errors', () => {
+    const resp1 = new Response();
     const next = sinon.spy();
+    errorHandler({ code: 404, message: 'm1' }, undefined, resp1, next);
+    expect(resp1.status).to.have.been.calledWith(404);
+    expect(resp1.json).to.have.been.calledWith({ Message: 'm1' });
+    expect(next).to.have.been.called;
 
-    forRole('r1')(req, resp, next);
-
-    expect(next).to.have.been.calledWith();
-  });
-
-  it('should check role to raise error', () => {
-    const req = {
-      requestContext: {
-        authorizer: {
-          claims: {
-            'cognito:groups': 'r3',
-          },
-        },
-      },
-    };
-    const resp = {
-      error: sinon.spy((data) => data),
-    };
-    const next = sinon.spy();
-
-    forRole('r1')(req, resp, next);
-
-    expect(resp.error).to.have.been.calledWith(401, 'Not Authorized');
+    const resp2 = new Response();
+    errorHandler({ message: 'm2' }, undefined, resp2, next);
+    expect(resp2.status).to.not.have.been.calledWith(500);
+    expect(resp2.json).to.not.have.been.calledWith({ Message: 'm2' });
+    expect(next).to.have.been.called;
   });
 
   it('should filter out soft deleted items', async () => {

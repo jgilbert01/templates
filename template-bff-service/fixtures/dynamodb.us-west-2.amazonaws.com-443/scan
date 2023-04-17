@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.Scan
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-bff-service-stg-entities\",\"ExpressionAttributeNames\":{\"#status\":\"status\"},\"ExpressionAttributeValues\":{\":status\":{\"S\":\"APPROVED\"}},\"FilterExpression\":\"#status = :status\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Fri, 05 Aug 2022 19:50:09 GMT
+content-type: application/x-amz-json-1.0
+content-length: 2335
+connection: keep-alive
+x-amzn-requestid: EGSE6N4QE49I8AL7S4505AT3P7VV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 871540406
+
+{"Count":2,"Items":[{"status":{"S":"APPROVED"},"timestamp":{"N":"1657428876055"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1660280076"},"discriminator":{"S":"thing"},"name":{"S":"Thing 3"},"district":{"M":{"district":{"M":{"name":{"S":"Great Lakes and Ohio River district"},"id":{"S":"LRD"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"district"},"timestamp":{"N":"1656537757126"}}},"lastModifiedBy":{"S":"system"},"name":{"S":"Buffalo"},"id":{"S":"LRB"},"timestamp":{"N":"1656537757126"},"states":{"L":[{"M":{"name":{"S":"Pennsylvania"},"id":{"S":"PA"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537757126"}}},{"M":{"name":{"S":"Ohio"},"id":{"S":"OH"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537757126"}}},{"M":{"name":{"S":"New York"},"id":{"S":"NY"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537757126"}}}]},"discriminator":{"S":"district"}}},"sk":{"S":"thing"},"lastModifiedBy":{"S":"system"},"description":{"S":"333"},"id":{"S":"4a0f4270-9b1f-4ea7-8047-72ca7a4cd2fd"},"pk":{"S":"4a0f4270-9b1f-4ea7-8047-72ca7a4cd2fd"}},{"status":{"S":"APPROVED"},"timestamp":{"N":"1659102583290"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1661953783"},"discriminator":{"S":"thing"},"name":{"S":"Anita New Thing"},"district":{"M":{"district":{"M":{"name":{"S":"Northwestern district"},"id":{"S":"NWD"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"district"},"timestamp":{"N":"1656537758769"}}},"lastModifiedBy":{"S":"system"},"name":{"S":"Seattle"},"id":{"S":"NWS"},"states":{"L":[{"M":{"name":{"S":"Idaho"},"id":{"S":"ID"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537758769"}}},{"M":{"name":{"S":"Washington"},"id":{"S":"WA"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537758769"}}},{"M":{"name":{"S":"Montana"},"id":{"S":"MT"},"lastModifiedBy":{"S":"system"},"discriminator":{"S":"state"},"timestamp":{"N":"1656537758769"}}}]},"timestamp":{"N":"1656537758769"},"discriminator":{"S":"district"}}},"sk":{"S":"thing"},"lastModifiedBy":{"S":"system"},"description":{"S":"Test thing Anita is testing"},"id":{"S":"4da3c3e7-aeba-4483-b7b3-343a3b6d7955"},"pk":{"S":"4da3c3e7-aeba-4483-b7b3-343a3b6d7955"}}],"ScannedCount":66}

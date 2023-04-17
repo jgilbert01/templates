@@ -1,0 +1,4 @@
+# https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html
+cron:
+  us-east-1: cron(0 7 1 JAN,APR,JUL,OCT ? *)
+  us-west-2: cron(5 7 1 JAN,APR,JUL,OCT ? *) # 5 minute delay to allow for replication

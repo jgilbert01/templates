@@ -4,13 +4,18 @@ import {
   defaultOptions,
   decryptEvent,
   fromKinesis,
+  fromSqsEvent,
+  getSecrets,
   prefilterOnEventTypes,
   toPromise,
 } from 'aws-lambda-stream';
 
 import RULES from './rules';
 
-const OPTIONS = { ...defaultOptions };
+const OPTIONS = {
+  ...defaultOptions,
+  // ...process.env,
+};
 
 const PIPELINES = {
   ...initializeFrom(RULES),
@@ -25,18 +30,23 @@ export class Handler {
 
   handle(event, includeErrors = true) {
     return initialize(PIPELINES, this.options)
-      .assemble(fromKinesis(event)
-        .through(decryptEvent({
-          ...this.options,
-          prefilter: prefilterOnEventTypes(RULES),
-        })),
-      includeErrors);
+      .assemble(
+        fromSqsEvent(event)
+        // fromKinesis(event)
+          .through(decryptEvent({
+            ...this.options,
+            prefilter: prefilterOnEventTypes(RULES),
+          })),
+        includeErrors,
+      );
   }
 }
 
 export const handle = async (event, context, int = {}) => {
   debug('event: %j', event);
   debug('context: %j', context);
+
+  // const options = await getSecrets(OPTIONS);
 
   return new Handler({ ...OPTIONS, ...int })
     .handle(event)

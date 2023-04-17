@@ -24,11 +24,13 @@ export class Handler {
 
   handle(event, includeErrors = true) {
     return initialize(PIPELINES, this.options)
-      .assemble(fromDynamodb(event)
-        .through(decryptEvent({
-          ...this.options,
-        })),
-      includeErrors);
+      .assemble(
+        fromDynamodb(event)
+          .through(decryptEvent({
+            ...this.options,
+          })),
+        includeErrors,
+      );
   }
 }
 

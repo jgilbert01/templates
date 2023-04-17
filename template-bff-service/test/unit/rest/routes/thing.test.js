@@ -3,7 +3,9 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 
 import Model from '../../../../src/models/thing';
-import { getThing, saveThing, deleteThing } from '../../../../src/rest/routes/thing';
+import {
+  queryThings, getThing, saveThing, deleteThing,
+} from '../../../../src/rest/routes/thing';
 
 class Response {
   constructor() {
@@ -72,6 +74,45 @@ describe('rest/routes/thing.js', () => {
     expect(data).to.deep.equal({
       id: '00000000-0000-0000-0000-000000000000',
       name: 'thing0',
+    });
+  });
+
+  it('should query', async () => {
+    const stub = sinon.stub(Model.prototype, 'query').resolves({
+      last: undefined,
+      data: [{
+        id: '00000000-0000-0000-0000-000000000000',
+        name: 'thing0',
+      }],
+    });
+
+    const request = {
+      namespace: {
+        models: {
+          thing: new Model(),
+        },
+      },
+    };
+    const response = new Response();
+
+    const data = await queryThings(request, response);
+
+    expect(stub).to.have.been.calledWith({});
+
+    expect(response.status).to.have.been.calledWith(200);
+    expect(response.json).to.have.been.calledWith({
+      last: undefined,
+      data: [{
+        id: '00000000-0000-0000-0000-000000000000',
+        name: 'thing0',
+      }],
+    });
+    expect(data).to.deep.equal({
+      last: undefined,
+      data: [{
+        id: '00000000-0000-0000-0000-000000000000',
+        name: 'thing0',
+      }],
     });
   });
 

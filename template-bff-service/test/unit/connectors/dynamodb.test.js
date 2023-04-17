@@ -70,6 +70,90 @@ describe('connectors/dynamodb.js', () => {
     }]);
   });
 
+  it('should query - page 1', async () => {
+    const spy = sinon.spy((params, cb) => cb(null, {
+      LastEvaluatedKey: { pk: '1', sk: 'thing' },
+      Items: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      }],
+    }));
+
+    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+
+    const data = await new Connector(debug('db'), 't1')
+      .query({
+        index: 'gsi1',
+        keyName: 'discriminator',
+        keyValue: 'thing',
+      });
+
+    expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
+      TableName: 't1',
+      IndexName: 'gsi1',
+      ExclusiveStartKey: undefined,
+      KeyConditionExpression: '#keyName = :keyName',
+      ExpressionAttributeNames: { '#keyName': 'discriminator' },
+      ExpressionAttributeValues: { ':keyName': 'thing' },
+      FilterExpression: undefined,
+      ScanIndexForward: undefined,
+    });
+    expect(data).to.deep.equal({
+      last: 'eyJwayI6IjEiLCJzayI6InRoaW5nIn0=',
+      data: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      }],
+    });
+  });
+
+  it('should query - page 2', async () => {
+    const spy = sinon.spy((params, cb) => cb(null, {
+      Items: [{
+        pk: '2',
+        sk: 'thing',
+        name: 'thing2',
+        timestamp: 1600051691001,
+      }],
+    }));
+
+    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+
+    const data = await new Connector(debug('db'), 't1')
+      .query({
+        index: 'gsi1',
+        keyName: 'discriminator',
+        keyValue: 'thing',
+        last: 'eyJwayI6IjEiLCJzayI6InRoaW5nIn0=',
+      });
+
+    expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
+      TableName: 't1',
+      IndexName: 'gsi1',
+      ExclusiveStartKey: { pk: '1', sk: 'thing' },
+      KeyConditionExpression: '#keyName = :keyName',
+      ExpressionAttributeNames: { '#keyName': 'discriminator' },
+      ExpressionAttributeValues: { ':keyName': 'thing' },
+      FilterExpression: undefined,
+      ScanIndexForward: undefined,
+    });
+    expect(data).to.deep.equal({
+      last: undefined,
+      data: [{
+        pk: '2',
+        sk: 'thing',
+        name: 'thing2',
+        timestamp: 1600051691001,
+      }],
+    });
+  });
+
   it('should calculate updateExpression', () => {
     expect(updateExpression({
       name: 'Thing One',

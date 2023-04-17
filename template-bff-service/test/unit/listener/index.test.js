@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'highland';
 
-import { UNKNOWN_KINESIS_EVENT_TYPE } from 'aws-lambda-stream';
+import { UNKNOWN_KINESIS_EVENT_TYPE, UNKNOWN_SQS_EVENT_TYPE } from 'aws-lambda-stream';
 
 import { handle, Handler } from '../../../src/listener';
 
@@ -12,7 +12,8 @@ describe('listener/index.js', () => {
 
   it('should verify Handler', (done) => {
     new Handler()
-      .handle(UNKNOWN_KINESIS_EVENT_TYPE)
+      // .handle(UNKNOWN_KINESIS_EVENT_TYPE)
+      .handle(UNKNOWN_SQS_EVENT_TYPE)
       .collect()
       .tap((collected) => {
         expect(collected.length).to.equal(0);

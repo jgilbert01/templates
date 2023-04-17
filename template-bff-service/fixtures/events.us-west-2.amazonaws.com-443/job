@@ -1,0 +1,13 @@
+POST /
+content-type: application/x-amz-json-1.1
+x-amz-target: AWSEvents.PutEvents
+host: events.us-west-2.amazonaws.com
+body: {\"Entries\":[{\"EventBusName\":\"template-event-hub-stg-bus\",\"Source\":\"custom\",\"DetailType\":\"xyz\",\"Detail\":\"{\\\"type\\\":\\\"xyz\\\",\\\"tags\\\":{\\\"account\\\":\\\"dev\\\",\\\"region\\\":\\\"us-west-2\\\",\\\"stage\\\":\\\"stg\\\",\\\"source\\\":\\\"template-bff-service\\\",\\\"functionname\\\":\\\"undefined\\\",\\\"pipeline\\\":\\\"job1\\\",\\\"skip\\\":true}}\"},{\"EventBusName\":\"template-event-hub-stg-bus\",\"Source\":\"custom\",\"DetailType\":\"xyz\",\"Detail\":\"{\\\"type\\\":\\\"xyz\\\",\\\"tags\\\":{\\\"account\\\":\\\"dev\\\",\\\"region\\\":\\\"us-west-2\\\",\\\"stage\\\":\\\"stg\\\",\\\"source\\\":\\\"template-bff-service\\\",\\\"functionname\\\":\\\"undefined\\\",\\\"pipeline\\\":\\\"job1\\\",\\\"skip\\\":true}}\"}]}
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 836259b0-263e-44f3-b7fb-5dd534823685
+content-type: application/x-amz-json-1.1
+content-length: 136
+date: Fri, 05 Aug 2022 19:50:09 GMT
+
+{"Entries":[{"EventId":"4d0549f4-8c38-ff6a-1d66-d38456a26863"},{"EventId":"dc0caf14-0f36-35c5-77f9-05d7970df48c"}],"FailedEntryCount":0}
