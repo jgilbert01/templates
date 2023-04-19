@@ -1,0 +1,55 @@
+service: ${self:custom.subsys}-s3-bff-service
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs16.x
+  logRetentionInDays: 30
+  environment: ${file(serverless/config.yml):environment}
+  endpointType: REGIONAL
+  apiGateway: ${file(serverless/apig.yml):apiGateway}
+
+params: ${file(serverless/config.yml):params}
+package:
+  individually: true
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+  # replication: ${file(serverless/s3.yml):replication}
+
+plugins:
+  # - serverless-aws-describe-plugin
+  # - serverless-kinesis-esm-plugin
+  - serverless-webpack
+  - baton-vcr-serverless-plugin
+  - serverless-offline
+
+functions:
+  rest:
+    handler: src/rest/index.handle
+    events:
+      - http:
+          path: '{proxy+}'
+          method: any
+          cors: ${file(serverless/apig.yml):cors}
+          authorizer: ${file(serverless/apig.yml):authorizer}
+  trigger:
+    handler: src/trigger/index.handle
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [ TriggerQueue, Arn ]
+
+resources:
+  - ${file(serverless/apig.yml):resources}
+  - ${file(serverless/s3.yml):resources}
+  - ${file(serverless/sns.yml):resources}
+  - ${file(serverless/sqs-trigger.yml):resources}
+  - ${file(serverless/conditions.yml)}

@@ -1,0 +1,22 @@
+params:
+  stg:
+    debug: '*'
+    account: dev # nonprod
+  prd:
+    debug: ''
+    account: prod
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  BUCKET_NAME: ${self:custom.org}-${self:service}-${opt:stage}-${opt:region}
+  USER_POOL: ${cf(us-west-2):${self:custom.subsys}-cognito-resources-${opt:stage}.userPoolArn}
+  BUS_NAME: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busName}
+  BUS_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busArn}
+  # STREAM_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.stream1Arn}
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
+  # KMS_REGIONS: us-east-1,us-west-2

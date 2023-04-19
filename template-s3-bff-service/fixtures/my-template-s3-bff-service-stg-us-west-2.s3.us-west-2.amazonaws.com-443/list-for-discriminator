@@ -1,0 +1,14 @@
+GET /?list-type=2&delimiter=%2F&prefix=files%2F
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: UdHS1CKVV1sMjFrUl7yrA38eUJxQ68ngzpuDnXuK3c1uvIiucvfvdApSuqan2IKdL/hIHKkSJ7E=
+x-amz-request-id: DG8YG5RQM6HJ47J8
+date: Wed, 22 Jun 2022 13:29:45 GMT
+x-amz-bucket-region: us-west-2
+content-type: application/xml
+transfer-encoding: chunked
+server: AmazonS3
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>my-template-s3-bff-service-stg-us-west-2</Name><Prefix>files/</Prefix><KeyCount>2</KeyCount><MaxKeys>1000</MaxKeys><Delimiter>/</Delimiter><IsTruncated>false</IsTruncated><Contents><Key>files/</Key><LastModified>2022-06-18T11:21:57.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><StorageClass>STANDARD</StorageClass></Contents><CommonPrefixes><Prefix>files/123/</Prefix></CommonPrefixes></ListBucketResult>

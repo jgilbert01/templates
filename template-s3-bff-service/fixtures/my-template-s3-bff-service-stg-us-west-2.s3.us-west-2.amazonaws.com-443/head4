@@ -1,0 +1,22 @@
+HEAD /files/123/test.txt
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: 4VrC7/Bmv2WKYNcjLmxsOnVTjzlMeQespfM6r6HoMFSVsNi8G501DJzsz8/s/1mi/SIC2iEiS6A=
+x-amz-request-id: 31T4K0YH6F5WPPG1
+date: Fri, 24 Jun 2022 19:20:17 GMT
+last-modified: Wed, 22 Jun 2022 20:35:53 GMT
+etag: "fcc9de154ef0217f8e5644b5dd8a7a19"
+x-amz-server-side-encryption: AES256
+x-amz-meta-awsregion: us-west-2
+cache-control: private, max-age=300
+x-amz-meta-discriminator: files
+content-disposition: inline; filename="test.txt"
+x-amz-meta-fileid: test.txt
+x-amz-meta-entityid: 123
+x-amz-meta-lastmodifiedby: f50e821f-3327-4aac-9298-5ef79f0e29c5
+accept-ranges: bytes
+content-type: txt
+server: AmazonS3
+content-length: 399863
+

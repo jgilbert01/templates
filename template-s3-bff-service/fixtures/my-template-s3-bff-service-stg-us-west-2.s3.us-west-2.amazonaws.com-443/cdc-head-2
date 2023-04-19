@@ -1,0 +1,23 @@
+HEAD /file/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png?versionId=KLvnFF0R8i.biiFJjwUltq5rmSATPHVc
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: tmyQn2CbZJn+4sQFaIq8rmWqKujxTr4MWONqTipZBq9jx+rcvO6/xJLq6a4x3lqeySuSurvz0Vw=
+x-amz-request-id: B5ZRGBB0DH1M1ZV3
+date: Fri, 03 Mar 2023 14:52:38 GMT
+last-modified: Fri, 03 Mar 2023 14:21:54 GMT
+etag: "2de9cfd92e8b288ac6ebc263471ab500"
+x-amz-server-side-encryption: AES256
+x-amz-meta-awsregion: us-west-2
+cache-control: private, max-age=300
+x-amz-meta-discriminator: file
+content-disposition: inline; filename="login-gov.png"
+x-amz-meta-fileid: login-gov.png
+x-amz-meta-entityid: e82fa80f-0448-4a1f-a15b-bf27d56eb1ec
+x-amz-version-id: KLvnFF0R8i.biiFJjwUltq5rmSATPHVc
+x-amz-meta-lastmodifiedby: john.gilbert@example.com
+accept-ranges: bytes
+content-type: image/png
+server: AmazonS3
+content-length: 8913
+

@@ -1,0 +1,13 @@
+GET /?versions&max-keys=2&prefix=files%2F123%2Fcover.jpg
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: b1Ey6No2itZIgx6uAJoz78uxWKWEIf3e/W7eTfLSyVOd73OLWZLlW1/ujg5Lr48BbqI5D8KVOFc=
+x-amz-request-id: 0FY3ZZWMZJTMRWDN
+date: Fri, 24 Jun 2022 19:20:16 GMT
+content-type: application/xml
+transfer-encoding: chunked
+server: AmazonS3
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ListVersionsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>my-template-s3-bff-service-stg-us-west-2</Name><Prefix>files/123/cover.jpg</Prefix><KeyMarker></KeyMarker><VersionIdMarker></VersionIdMarker><NextKeyMarker>files/123/cover.jpg</NextKeyMarker><NextVersionIdMarker>ZcyAVOt6GeVhRD.zFBe89uu6gpQ.7yNV</NextVersionIdMarker><MaxKeys>2</MaxKeys><IsTruncated>true</IsTruncated><Version><Key>files/123/cover.jpg</Key><VersionId>I1oXE.DoH9632dqhWPsTFHh4azifjuw.</VersionId><IsLatest>true</IsLatest><LastModified>2022-06-22T20:35:53.000Z</LastModified><ETag>&quot;fcc9de154ef0217f8e5644b5dd8a7a19&quot;</ETag><Size>399863</Size><Owner><ID>0ecfe16b9b36ebbff8f6c9f00f1ef001a1a5617056e2e7c768be62c4f4a35c22</ID><DisplayName>devcloud</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Version><Version><Key>files/123/cover.jpg</Key><VersionId>ZcyAVOt6GeVhRD.zFBe89uu6gpQ.7yNV</VersionId><IsLatest>false</IsLatest><LastModified>2022-06-22T20:33:53.000Z</LastModified><ETag>&quot;fcc9de154ef0217f8e5644b5dd8a7a19&quot;</ETag><Size>399863</Size><Owner><ID>0ecfe16b9b36ebbff8f6c9f00f1ef001a1a5617056e2e7c768be62c4f4a35c22</ID><DisplayName>devcloud</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Version></ListVersionsResult>

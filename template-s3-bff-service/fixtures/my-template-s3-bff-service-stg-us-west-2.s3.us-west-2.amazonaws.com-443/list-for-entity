@@ -1,0 +1,14 @@
+GET /?list-type=2&delimiter=%2F&prefix=files%2F123%2F
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: Ho5IRy1M98/GC87Dlymri9cJtmHVpruLwSteBgtbvfV8cKIV5lP1q6G7s/pzkdD5ksmHV4bHTL8=
+x-amz-request-id: DG8KZ3T596HGBPZT
+date: Wed, 22 Jun 2022 13:29:45 GMT
+x-amz-bucket-region: us-west-2
+content-type: application/xml
+transfer-encoding: chunked
+server: AmazonS3
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>my-template-s3-bff-service-stg-us-west-2</Name><Prefix>files/123/</Prefix><KeyCount>3</KeyCount><MaxKeys>1000</MaxKeys><Delimiter>/</Delimiter><IsTruncated>false</IsTruncated><Contents><Key>files/123/</Key><LastModified>2022-06-18T11:23:06.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>files/123/cover.jpg</Key><LastModified>2022-06-22T13:10:33.000Z</LastModified><ETag>&quot;fcc9de154ef0217f8e5644b5dd8a7a19&quot;</ETag><Size>399863</Size><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>files/123/test.txt</Key><LastModified>2022-06-21T19:17:46.000Z</LastModified><ETag>&quot;8b1a9953c4611296a827abf8c47804d7&quot;</ETag><Size>5</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>

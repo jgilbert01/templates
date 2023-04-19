@@ -1,0 +1,12 @@
+DELETE /files/123/cover.jpg
+content-type: application/octet-stream
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 204 No Content
+x-amz-id-2: pWymszB/0SeCFXbkWlE2fojLsjD/oDHWAvguNnWdp6dm+S18nGOGZuC7hEFoxD2nv0E4jp8cwqM=
+x-amz-request-id: MVHVJS904N7ANFP3
+date: Tue, 21 Jun 2022 18:51:37 GMT
+x-amz-version-id: .XcFc3p6H8OtmQ8ALE9UxTHTnpAhGA5e
+x-amz-delete-marker: true
+server: AmazonS3
+

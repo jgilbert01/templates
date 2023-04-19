@@ -1,0 +1,23 @@
+HEAD /files/123/cover.jpg?versionId=ZcyAVOt6GeVhRD.zFBe89uu6gpQ.7yNV
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: tkOIWkpAyT3EetdN3/diKjnL9nDqAhRN2sX6DboaaFJiVZfluhqGMSIXlwdnni0spM49Zm8lBdk=
+x-amz-request-id: 31TEYHDEVD2NY36X
+date: Fri, 24 Jun 2022 19:20:17 GMT
+last-modified: Wed, 22 Jun 2022 20:33:53 GMT
+etag: "fcc9de154ef0217f8e5644b5dd8a7a19"
+x-amz-server-side-encryption: AES256
+x-amz-meta-awsregion: us-west-2
+cache-control: private, max-age=300
+x-amz-meta-discriminator: files
+content-disposition: inline; filename="cover.jpg"
+x-amz-meta-fileid: cover.jpg
+x-amz-meta-entityid: 123
+x-amz-version-id: ZcyAVOt6GeVhRD.zFBe89uu6gpQ.7yNV
+x-amz-meta-lastmodifiedby: f50e821f-3327-4aac-9298-5ef79f0e29c5
+accept-ranges: bytes
+content-type: image/jpeg
+server: AmazonS3
+content-length: 399863
+
