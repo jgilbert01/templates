@@ -1,0 +1,13 @@
+HEAD /thiXXXXXg/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png?versionId=6r3D2azF1Y3ndS6u9ENaE02XywDAgVO2
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 405 Method Not Allowed
+x-amz-request-id: B5ZXAY2GMQD3CNKN
+x-amz-id-2: SOyOlC4+qudxRJ9GSCWgYnJ0s+vqtx9UmBU8CWyPoEbZ+DrakWGCKx+yB7j0XpGeF07t2zYRYKY=
+x-amz-delete-marker: true
+x-amz-version-id: 6r3D2azF1Y3ndS6u9ENaE02XywDAgVO2
+allow: DELETE
+content-type: application/xml
+date: Fri, 03 Mar 2023 14:52:36 GMT
+server: AmazonS3
+

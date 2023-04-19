@@ -1,0 +1,13 @@
+GET /?versions&prefix=file%2Fe82fa80f-0448-4a1f-a15b-bf27d56eb1ec%2Flogin-gov.png
+host: my-template-s3-bff-service-stg-us-west-2.s3.us-west-2.amazonaws.com
+
+HTTP/1.1 200 OK
+x-amz-id-2: MP44/95eXsnEDWf9vRRcGf4HHej9XDIaPoj6XxoHsKytnND//a+SCHcnqC/CsvNSCRFl9TMnM9fgppNN4vEesw==
+x-amz-request-id: 7XK4J7Q4RXWK1SRV
+date: Fri, 03 Mar 2023 15:57:58 GMT
+content-type: application/xml
+transfer-encoding: chunked
+server: AmazonS3
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ListVersionsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>my-template-s3-bff-service-stg-us-west-2</Name><Prefix>file/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png</Prefix><KeyMarker></KeyMarker><VersionIdMarker></VersionIdMarker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><DeleteMarker><Key>file/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png</Key><VersionId>6r3D2azF1Y3ndS6u9ENaE02XywDAgVO2</VersionId><IsLatest>true</IsLatest><LastModified>2023-03-03T14:22:10.000Z</LastModified><Owner><ID>0ecfe16b9b36ebbff8f6c9f00f1ef001a1a5617056e2e7c768be62c4f4a35c22</ID><DisplayName>devcloud</DisplayName></Owner></DeleteMarker><Version><Key>file/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png</Key><VersionId>KLvnFF0R8i.biiFJjwUltq5rmSATPHVc</VersionId><IsLatest>false</IsLatest><LastModified>2023-03-03T14:21:54.000Z</LastModified><ETag>&quot;2de9cfd92e8b288ac6ebc263471ab500&quot;</ETag><Size>8913</Size><Owner><ID>0ecfe16b9b36ebbff8f6c9f00f1ef001a1a5617056e2e7c768be62c4f4a35c22</ID><DisplayName>devcloud</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Version><Version><Key>file/e82fa80f-0448-4a1f-a15b-bf27d56eb1ec/login-gov.png</Key><VersionId>COE5iyDeRVsJxEkhOPkelivGhdRGxXCn</VersionId><IsLatest>false</IsLatest><LastModified>2023-03-03T14:19:27.000Z</LastModified><ETag>&quot;2de9cfd92e8b288ac6ebc263471ab500&quot;</ETag><Size>8913</Size><Owner><ID>0ecfe16b9b36ebbff8f6c9f00f1ef001a1a5617056e2e7c768be62c4f4a35c22</ID><DisplayName>devcloud</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Version></ListVersionsResult>
