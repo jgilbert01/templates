@@ -33,29 +33,27 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
 
-    ApiGlobalBasePathMapping:
-      DependsOn:
-        - ApiGatewayDeployment${sls:instanceId}
-      Type: AWS::ApiGateway::BasePathMapping
-      Properties:
-        BasePath: api-${self:service}
-        DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.AlbGlobalDomainName}
-        # DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiGlobalDomainName}
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        Stage: ${opt:stage}
+    # ApiGlobalBasePathMapping:
+    #   DependsOn:
+    #     - ApiGatewayDeployment${sls:instanceId}
+    #   Type: AWS::ApiGateway::BasePathMapping
+    #   Properties:
+    #     BasePath: api-${self:service}
+    #     DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiGlobalDomainName}
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Stage: ${opt:stage}
 
-    ApiRegionalBasePathMapping:
-      DependsOn:
-        - ApiGatewayDeployment${sls:instanceId}
-      Type: AWS::ApiGateway::BasePathMapping
-      Properties:
-        BasePath: api-${self:service}
-        DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.AlbRegionalDomainName}
-        # DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiRegionalDomainName}
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        Stage: ${opt:stage}
+    # ApiRegionalBasePathMapping:
+    #   DependsOn:
+    #     - ApiGatewayDeployment${sls:instanceId}
+    #   Type: AWS::ApiGateway::BasePathMapping
+    #   Properties:
+    #     BasePath: api-${self:service}
+    #     DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiRegionalDomainName}
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Stage: ${opt:stage}
 
   # PRIVATE endpoint only
   Outputs:
