@@ -1,0 +1,214 @@
+Resources:
+  OriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: ${opt:stage}-${self:service} (${opt:region})
+
+  GlobalDistribution:
+    Type: AWS::CloudFront::Distribution
+    Condition: IsWestAndHasEastCertificate
+    Properties:
+      DistributionConfig:
+        Comment: Global Main SPA ${opt:stage}-${self:service} (${opt:region})
+        Origins:
+          - Id: s3primary
+            DomainName: ${self:custom.org}-${self:custom.subsys}-ui-main-${opt:stage}-${opt:region}.s3.${opt:region}.amazonaws.com
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                - ''
+                - - origin-access-identity/cloudfront/
+                  - Ref: OriginAccessIdentity
+          - Id: s3failover
+            DomainName: ${self:custom.org}-${self:custom.subsys}-ui-main-${opt:stage}-${self:custom.failover.${opt:region}}.s3.${self:custom.failover.${opt:region}}.amazonaws.com
+            S3OriginConfig:
+              OriginAccessIdentity: ${cf(${self:custom.failover.${opt:region}}):${self:service}-${opt:stage}.OriginAccessIdentityId, 'UNDEFINED'}
+                Fn::Join:
+                - ''
+                - - origin-access-identity/cloudfront/
+                  - Ref: OriginAccessIdentity
+          - Id: api
+            DomainName: ${opt:stage}-api.${param:domainName}
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+        OriginGroups:
+          Quantity: 1
+          Items:
+            - Id: og1
+              Members:
+                Quantity: 2
+                Items:
+                  - OriginId: s3primary
+                  - OriginId: s3failover
+              FailoverCriteria:
+                StatusCodes: 
+                  Quantity: 4
+                  Items:
+                    - 500
+                    - 502
+                    - 503
+                    - 504
+        Enabled: true
+        # Aliases:
+        #   - ${opt:stage}-cdn.${param:domainName}
+        PriceClass: PriceClass_100
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          TargetOriginId: og1
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - HEAD
+            - GET
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          MinTTL: 0
+          DefaultTTL: 0
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - TargetOriginId: api
+            PathPattern: /api-*
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            CachedMethods:
+              - HEAD
+              - GET
+              - OPTIONS
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Headers:
+                - Accept
+                - Authorization
+                - Referer
+                - Content-Type
+              Cookies:
+                Forward: all
+            MinTTL: 0
+            DefaultTTL: 0
+            ViewerProtocolPolicy: https-only
+        ViewerCertificate:
+          AcmCertificateArn: ${cf(us-east-1):${self:custom.subsys}-global-resources-${opt:stage}.CertificateArn}
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        # Logging:
+        #   IncludeCookies: true
+        #   Bucket: ${param:loggingBucket}
+        #   Prefix: aws-cloudfront
+        # WebACLId: ${param:webACLId}
+
+  RegionalDistribution:
+    Type: AWS::CloudFront::Distribution
+    # Condition: HasEastCertificate
+    Properties:
+      DistributionConfig:
+        Comment: Regional Main SPA ${opt:stage}-${self:service} (${opt:region})
+        Origins:
+          - Id: s3
+            DomainName: ${self:custom.org}-${self:custom.subsys}-ui-main-${opt:stage}-${opt:region}.s3.${opt:region}.amazonaws.com
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                - ''
+                - - origin-access-identity/cloudfront/
+                  - Ref: OriginAccessIdentity
+          - Id: api
+            DomainName: ${opt:region}-${opt:stage}-api.${param:domainName}
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+        Enabled: true
+        # Aliases:
+        #   - ${opt:region}-${opt:stage}-cdn.${param:domainName}
+        PriceClass: PriceClass_100
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          TargetOriginId: s3
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - HEAD
+            - GET
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          MinTTL: 0
+          DefaultTTL: 0
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - TargetOriginId: api
+            PathPattern: /api-*
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            CachedMethods:
+              - HEAD
+              - GET
+              - OPTIONS
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Headers:
+                - Accept
+                - Authorization
+                - Referer
+                - Content-Type
+              Cookies:
+                Forward: all
+            MinTTL: 0
+            DefaultTTL: 0
+            ViewerProtocolPolicy: https-only
+        # ViewerCertificate:
+        #   AcmCertificateArn: ${cf(us-east-1):${self:custom.subsys}-global-resources-${opt:stage}.CertificateArn}
+        #   SslSupportMethod: sni-only
+        #   MinimumProtocolVersion: TLSv1.2_2021
+        # Logging:
+        #   IncludeCookies: true
+        #   Bucket: ${self:custom.cdn.logging.bucketName} # ${self:custom.cdn.logging.bucket}.s3.amazonaws.com
+        #   Prefix: aws-cloudfront
+        # WebACLId: ${param:webACLId}
+
+Outputs:
+  GlobalDistributionId:
+    Condition: IsWestAndHasEastCertificate
+    Value:
+      Ref: GlobalDistribution
+  RegionalDistributionId:
+    # Condition: HasEastCertificate
+    Value:
+      Ref: RegionalDistribution
+  OriginAccessIdentityId:
+    Value:
+      Ref: OriginAccessIdentity

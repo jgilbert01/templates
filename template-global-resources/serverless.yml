@@ -1,0 +1,28 @@
+service: ${self:custom.subsys}-global-resources
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+  stackTags: ${file(serverless/tags.yml)}
+
+params: ${file(serverless/config.yml):params}
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  failover:
+    us-west-2: us-east-1
+    us-east-1: us-west-2 
+
+resources:
+  # - ${file(serverless/kms.yml):resources}
+
+  # - ${file(serverless/route53.yml):resources}
+  # - ${file(serverless/acm.yml):resources}  
+  - ${file(serverless/cloudfront.yml)}
+  # - ${file(serverless/apig.yml):resources}
+
+  # - ${file(serverless/backup.yml):resources}
+  - ${file(serverless/conditions.yml)}

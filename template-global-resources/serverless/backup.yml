@@ -1,0 +1,52 @@
+# https://www.backblaze.com/blog/whats-the-diff-3-2-1-vs-3-2-1-1-0-vs-4-3-2/
+# resource-replicated, backup-local-and-separate-account
+resources:
+  Resources:
+    BackupVault:
+      Type: AWS::Backup::BackupVault
+      Properties:
+        BackupVaultName: ${self:service}-${opt:stage}
+
+    BackupPlan:
+      Type: AWS::Backup::BackupPlan
+      Properties:
+        BackupPlan:
+          BackupPlanName: ${self:service}-${opt:stage}
+          BackupPlanRule:
+            - RuleName: ContinuousBackup
+              TargetBackupVault: !Ref BackupVault
+              ScheduleExpression: 'cron(0 14-22 ? * MON-FRI *)' # 9am-5pm EST
+              StartWindowMinutes: 60
+              CompletionWindowMinutes: 600
+              EnableContinuousBackup: true
+              Lifecycle:
+                DeleteAfterDays: 35
+
+    BackupRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.subsys}-backup-${opt:stage}
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - backup.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup'
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
+
+    BackupSelection:
+      Type: AWS::Backup::BackupSelection
+      Properties:
+        BackupPlanId: !Ref BackupPlan
+        BackupSelection:
+          SelectionName: ${self:service}-${opt:stage}
+          IamRoleArn: !GetAtt BackupRole.Arn
+          Resources:
+            - !Sub 'arn:${AWS::Partition}:dynamodb:${opt:region}:${aws:accountId}:table/*${self:custom.subsys}*'
+            - !Sub 'arn:${AWS::Partition}:s3:::*${self:custom.subsys}*${opt:region}'

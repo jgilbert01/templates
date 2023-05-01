@@ -1,0 +1,17 @@
+resources:
+  Resources:
+    Certificate:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${param:domainName}
+        SubjectAlternativeNames:
+          - '*.${param:domainName}'
+        ValidationMethod: DNS
+        # DomainValidationOptions:
+        #   - DomainName: ${param:domainName}
+        #     HostedZoneId: ${param:hostedZoneId}
+
+  Outputs:
+    CertificateArn:
+      Value:
+        Ref: Certificate

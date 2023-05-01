@@ -1,0 +1,20 @@
+{
+  "name": "template-global-resources",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-west-2 -s dev",
+    "test:ci": "eval \"$(assume-role) npm test\"",
+    "dp:dev:w": "sls deploy --verbose -r us-west-2 -s dev --force",
+    "dp:dev:e": "sls deploy --verbose -r us-east-1 -s dev --force",
+    "dp:prd:w": "sls deploy --verbose -r us-west-2 -s prd --force",
+    "dp:prd:e": "sls deploy --verbose -r us-east-1 -s prd --force",
+    "dp:dev:w:ci": "eval \"$(assume-role) npm run dp:dev:w\"",
+    "dp:dev:e:ci": "eval \"$(assume-role) npm run dp:dev:e\"",
+    "dp:prd:w:ci": "eval \"$(assume-role) npm run dp:prd:w\"",
+    "dp:prd:e:ci": "eval \"$(assume-role) npm run dp:prd:e\""
+  },
+  "devDependencies": {
+    "aws-assume-role-cicd": "^1.0.0",
+    "serverless": "^3.0.0"
+  }
+}

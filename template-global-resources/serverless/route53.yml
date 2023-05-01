@@ -1,0 +1,90 @@
+resources:
+  Resources:
+    HostedZone: 
+      Type: AWS::Route53::HostedZone
+      Condition: IsWestDev
+      DeletionPolicy: Retain
+      Properties: 
+        Name: ${param:domainName}
+
+    CdnGlobalRecordSet:
+      Type: AWS::Route53::RecordSet
+      Condition: IsWestAndHasEastCertificate
+      Properties:
+        HostedZoneId: ${param:hostedZoneId}
+        Name: ${opt:stage}.${param:domainName}.
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName:
+            Fn::GetAtt:
+              - GlobalDistribution
+              - DomainName
+
+    CdnRegionalRecordSet:
+      Type: AWS::Route53::RecordSet
+      Condition: HasEastCertificate
+      Properties:
+        HostedZoneId: ${param:hostedZoneId}
+        Name: ${opt:region}-${opt:stage}.${param:domainName}.
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName:
+            Fn::GetAtt:
+              - RegionalDistribution
+              - DomainName
+
+    ApiGlobalRecordSet:
+      DependsOn:
+        - ApiGlobalDomainName
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneId: ${param:hostedZoneId}
+        Name:
+          Fn::Join:
+            - ""
+            - - Ref: ApiGlobalDomainName
+              - .
+        Region: ${opt:region}
+        SetIdentifier: ${opt:region}
+        # HealthCheckId: ${self:custom.dns.${opt:region}.healthCheckId}
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+              - ApiGlobalDomainName
+              - RegionalHostedZoneId
+          DNSName:
+            Fn::GetAtt:
+              - ApiGlobalDomainName
+              - RegionalDomainName
+
+    ApiRegionalRecordSet:
+      DependsOn:
+        - ApiRegionalDomainName
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneId: ${param:hostedZoneId}
+        Name:
+          Fn::Join:
+            - ""
+            - - Ref: ApiRegionalDomainName
+              - .
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+              - ApiRegionalDomainName
+              - RegionalHostedZoneId
+          DNSName:
+            Fn::GetAtt:
+              - ApiRegionalDomainName
+              - RegionalDomainName
+
+  Outputs:
+    DomainName:
+      Value: ${param:domainName}
+    HostedZoneId:
+      Value: ${param:hostedZoneId}
+

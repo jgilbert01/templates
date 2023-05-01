@@ -1,0 +1,32 @@
+params:
+  dev:
+    account: dev # nonprod
+    domainName: ${self:custom.subsys}-${opt:stage}.${self:custom.org}.com
+    hostedZoneId: ${self:params.dev.${opt:region}.hostedZoneId}
+    loggingBucket: ${self:params.dev.${opt:region}.loggingBucket}
+    webACLId: ${self:params.dev.${opt:region}.webACLId}
+    us-west-2:
+      hostedZoneId: 
+        Ref: HostedZone
+      loggingBucket: tbd
+      webACLId: tbd
+    us-east-1:
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-dev.HostedZoneId}
+      loggingBucket: tbd
+      webACLId: tbd
+
+  prd:
+    account: prod
+    domainName: ${self:custom.subsys}.${self:custom.org}.com
+    hostedZoneId: ${self:params.prd.${opt:region}.hostedZoneId}
+    loggingBucket: ${self:params.prd.${opt:region}.loggingBucket}
+    webACLId: ${self:params.prd.${opt:region}.webACLId}
+    us-west-2: 
+      hostedZoneId: 
+        Ref: HostedZone
+      loggingBucket: tbd
+      webACLId: tbd
+    us-east-1: 
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-prd.HostedZoneId}
+      loggingBucket: tbd
+      webACLId: tbd

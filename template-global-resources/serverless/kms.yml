@@ -1,0 +1,43 @@
+resources:
+  Resources:
+    MasterKey:
+      Type: AWS::KMS::Key
+      DeletionPolicy: Retain
+      Properties:
+        KeyPolicy:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: arn:${self:custom.partition}:iam::${aws:accountId}:root
+              Action: 'kms:*'
+              Resource: '*'
+            # - Effect: Deny
+            # Principal:
+            # AWS: '*'
+            # Action:
+            # - 'kms:DisableKey'
+            # - 'kms:ScheduleKeyDeletion'
+            # Resource: '*'
+
+    MasterKeyAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: alias/${self:service}-${opt:stage}
+        TargetKeyId:
+          Ref: MasterKey
+
+  Outputs:
+    MasterKeyId:
+      Value:
+        Ref: MasterKey
+    MyMasterKeyArn:
+      Value:
+        Fn::GetAtt: [ MasterKey, Arn ]
+    MasterKeyArn:
+      # used to grant each region access to encrypt data keys with other region's master keys for failover
+      # also supports permissions across key rotations
+      Value: arn:${self:custom.partition}:kms:*:${aws:accountId}:key/*
+    MasterKeyAlias:
+      Value:
+        Ref: MasterKeyAlias
