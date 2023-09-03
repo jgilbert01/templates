@@ -21,7 +21,7 @@ resources:
 
   # - ${file(serverless/route53.yml):resources}
   # - ${file(serverless/acm.yml):resources}  
-  - ${file(serverless/cloudfront.yml)}
+  - ${file(serverless/cloudfront.yml):resources}
   # - ${file(serverless/apig.yml):resources}
 
   # - ${file(serverless/backup.yml):resources}
