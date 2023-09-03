@@ -1,0 +1,19 @@
+POST /
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sns.us-west-2.amazonaws.com
+body: Action=Subscribe&Attributes.entry.1.key=RawMessageDelivery&Attributes.entry.1.value=true&Attributes.entry.2.key=FilterPolicyScope&Attributes.entry.2.value=MessageBody&Attributes.entry.3.key=FilterPolicy&Attributes.entry.3.value=%7B%22tags%22%3A%7B%22source%22%3A%5B%22template-task-service%22%5D%7D%7D&Endpoint=arn%3Aaws%3Asqs%3Aus-west-2%3A123456789012%3Alvd-stg-sub1&Protocol=sqs&ReturnSubscriptionArn=true&TopicArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Atemplate-live-data-service-stg&Version=2010-03-31
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 50fd9e93-fc64-5934-9f86-c3fea5b2e0a5
+content-type: text/xml
+content-length: 380
+date: Sat, 02 Sep 2023 15:41:10 GMT
+
+<SubscribeResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+  <SubscribeResult>
+    <SubscriptionArn>arn:aws:sns:us-west-2:123456789012:template-live-data-service-stg:334b60e8-4ccc-4080-af78-9d92588c5761</SubscriptionArn>
+  </SubscribeResult>
+  <ResponseMetadata>
+    <RequestId>50fd9e93-fc64-5934-9f86-c3fea5b2e0a5</RequestId>
+  </ResponseMetadata>
+</SubscribeResponse>

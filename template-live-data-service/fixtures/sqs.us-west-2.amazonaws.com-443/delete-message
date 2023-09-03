@@ -1,0 +1,13 @@
+POST /
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sqs.us-west-2.amazonaws.com
+body: Action=DeleteMessageBatch&DeleteMessageBatchRequestEntry.1.Id=e9fd559d-ca23-4515-b24a-4adf471799f1&DeleteMessageBatchRequestEntry.1.ReceiptHandle=AQEBvi77N8ma7KK8ad%2BoJZeyPeVmZTo8%2F5nTUEOk5KoJGloQFZwYaREST9w8pC2syAxi%2F6GL1T6wdhjq%2B2gHKhVnTkz6m54qS7sZoSqkoqhpkJj4s1kNLyqztaGYzf7eE1cmDOTWukYiJ%2FTz1F5m00iDBH3wPG4pR1OQcBpDFp%2FUTAy8xGnX5yx9rGZ2HNk2d%2BmyRhFQh0TE0uazP5XSBJAdnpid%2FXuibpuMso1LVGnOxbNh%2B8uivX6SqsWGGT%2FKndx8z3JwdOjLxv18VdvjGWe4s8K5IXo4eZYlm%2F%2BkUhMlQRzd7Te8zXIKC1P%2FYM2Cal4uJ9gurtAYk7gu17Puq4iQqxBS1FB8UHChzbQ%2Fj7E9A%2BhurDi%2BRU3Z40vmC4p9%2B6m3tuKY8%2F3sLCvea8D%2BgSygNQ%3D%3D&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F123456789012%2Flvd-stg-sub1&Version=2012-11-05
+
+HTTP/1.1 200 OK
+x-amzn-requestid: d44208d1-368b-592d-aaac-55bc69e379e0
+date: Sat, 02 Sep 2023 16:04:56 GMT
+content-type: text/xml
+content-length: 386
+connection: keep-alive
+
+<?xml version="1.0"?><DeleteMessageBatchResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><DeleteMessageBatchResult><DeleteMessageBatchResultEntry><Id>e9fd559d-ca23-4515-b24a-4adf471799f1</Id></DeleteMessageBatchResultEntry></DeleteMessageBatchResult><ResponseMetadata><RequestId>d44208d1-368b-592d-aaac-55bc69e379e0</RequestId></ResponseMetadata></DeleteMessageBatchResponse>

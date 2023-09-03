@@ -1,0 +1,57 @@
+apiGateway:
+  disableDefaultEndpoint: true
+  # metrics: true
+  # binaryMediaTypes:
+  #   - '*/*'
+
+cors:
+  maxAge: 86400 # 1 day
+  cacheControl: 'max-age=86400, s-maxage=86400'
+
+authorizer:
+  arn: ${self:provider.environment.USER_POOL}
+#   arn: ${cf:${self:custom.subsys}-idm-service-${opt:stage}.AuthorizerArn}
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    GatewayResponseDefault5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    # ApiGlobalBasePathMapping:
+    #   DependsOn:
+    #     - ApiGatewayDeployment${sls:instanceId}
+    #   Type: AWS::ApiGateway::BasePathMapping
+    #   Properties:
+    #     BasePath: api-${self:service}
+    #     DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiGlobalDomainName}
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Stage: ${opt:stage}
+
+    # ApiRegionalBasePathMapping:
+    #   DependsOn:
+    #     - ApiGatewayDeployment${sls:instanceId}
+    #   Type: AWS::ApiGateway::BasePathMapping
+    #   Properties:
+    #     BasePath: api-${self:service}
+    #     DomainName: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiRegionalDomainName}
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Stage: ${opt:stage}
