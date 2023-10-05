@@ -33,13 +33,14 @@ class Model {
     this.claims = claims;
   }
 
-  query({ last /* more params here */ }) {
+  query({ last, limit /* more params here */ }) {
     return this.connector
       .query({
         index: 'gsi1',
         keyName: 'discriminator',
         keyValue: DISCRIMINATOR,
         last,
+        limit,
       })
       .then(async (response) => ({
         ...response,
