@@ -1,0 +1,7 @@
+params:
+  np:
+    shardCount: 1
+    # ingressShardCount: 1
+  prd:
+    shardCount: 1
+    # ingressShardCount: 1
