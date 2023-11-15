@@ -1,0 +1,42 @@
+{
+  "orgName": "template-ui",
+  "projectName": "nav",
+  "imports": {
+    "@template-ui/nav": "/template-ui-nav/SHA/template-ui-nav.js",
+    "@template-ui/nav/": "/template-ui-nav/SHA/"
+  },
+  "layout": {
+    "order": 1,
+    "routes": [
+      {
+        "type": "application",
+        "name": "@template-ui/nav",
+        "props": {
+          "authorizedForAllRoles": true
+        }
+      }
+    ]
+  },
+  "mount-points": {
+    "main": [
+      {
+        "import": "@template-ui/nav",
+        "order": 60,
+        "allow": [],
+        "deny": [],
+        "env": []
+      }
+    ],
+    "left-nav-categories": [
+      {
+        "key": "admin",
+        "order": 900,
+        "content": "Admin",
+        "icon": "MdSettings",
+        "genericSecondRowNav": true,
+        "roles": [],
+        "env": []
+      }
+    ]
+  }
+}

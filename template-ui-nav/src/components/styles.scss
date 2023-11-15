@@ -1,0 +1,34 @@
+.left-nav-toggle {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.wrapper {
+  display: flex;
+  position: absolute;
+  height: 100%;
+}
+
+.gb-warning {
+  background-color: #d30326 !important;
+  border-color: #d30326 !important;
+}
+
+.gb-warning-selected {
+  background-color: lighten(#d30326, 12.5%) !important;
+  border-color: lighten(#d30326, 12.5%) !important;
+}
+
+.gb-warning-selected:hover {
+  background-color: lighten(#d30326, 22.5%) !important;
+  border-color: lighten(#d30326, 22.5%) !important;
+}
+
+.gb-warning:hover {
+  background-color: #b00320;
+  cursor: pointer;
+}

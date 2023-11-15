@@ -1,0 +1,156 @@
+{
+  "name": "@template-ui/nav",
+  "scripts": {
+    "clean": "rimraf -rf dist/ coverage/",
+    "prepare": "is-ci || husky install",
+    "pre-commit": "lint-staged && npm test --watchAll=false",
+    "start": "better-npm-run start",
+    "start:standalone": "webpack serve --port 9001 --env standalone",
+    "prebuild": "npm run clean",
+    "build": "webpack --mode=production",
+    "build:np:w": "better-npm-run build:np:w",
+    "build:np:e": "better-npm-run build:np:e",
+    "build:prd:w": "better-npm-run build:prd:w",
+    "build:prd:e": "better-npm-run build:prd:e",
+    "analyze": "webpack --mode=production --env analyze",
+    "lint": "eslint src --fix --ext js",
+    "pretest": "npm run clean && npm run lint",
+    "test": "jest",
+    "test:ci": "better-npm-run test:ci",
+    "watch-tests": "cross-env BABEL_ENV=test jest --watch",
+    "coverage": "cross-env BABEL_ENV=test jest --coverage",
+    "dp:np:w": "s3-deploy './dist/**' --cwd './dist/' --region us-west-2 --bucket my-template-ui-main-np-us-west-2 --cache 31536000 --private --gzip js,map",
+    "dp:np:e": "s3-deploy './dist/**' --cwd './dist/' --region us-east-1 --bucket my-template-ui-main-np-us-east-1 --cache 31536000 --private --gzip js,map",
+    "dp:prd:w": "s3-deploy './dist/**' --cwd './dist/' --region us-west-2 --bucket my-template-ui-main-prd-us-west-2 --cache 31536000 --private --gzip js,map",
+    "dp:prd:e": "s3-deploy './dist/**' --cwd './dist/' --region us-east-1 --bucket my-template-ui-main-prd-us-east-1 --cache 31536000 --private --gzip js,map",
+    "dp:np:w:ci": "eval \"$(assume-role) npm run dp:np:w\"",
+    "dp:np:e:ci": "eval \"$(assume-role) npm run dp:np:e\"",
+    "dp:prd:w:ci": "eval \"$(assume-role) npm run dp:prd:w\"",
+    "dp:prd:e:ci": "eval \"$(assume-role) npm run dp:prd:e\""
+  },
+  "betterScripts": {
+    "start": {
+      "command": "webpack serve --port 9002 --env isLocal",
+      "env": {
+        "ENV": "np"
+      }
+    },
+    "build:np:w": {
+      "command": "npm run build",
+      "env": {
+        "ENV": "np"
+      }
+    },
+    "build:np:e": {
+      "command": "npm run build",
+      "env": {
+        "ENV": "np"
+      }
+    },
+    "build:prd:w": {
+      "command": "npm run build",
+      "env": {
+        "ENV": "prd"
+      }
+    },
+    "build:prd:e": {
+      "command": "npm run build",
+      "env": {
+        "ENV": "prd"
+      }
+    },
+    "test:ci": {
+      "command": "jest --coverage --testResultsProcessor",
+      "env": {
+        "CI": "true"
+      }
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,css,md}": [
+      "prettier --write",
+      "eslint --fix-dry-run"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/eslint-parser": "^7.14.7",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
+    "@babel/runtime": "^7.14.6",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/faker": "^5.1.3",
+    "@types/jest": "^26.0.16",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^12.12.39",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "@types/react-responsive": "^8.0.2",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-select": "^3.0.19",
+    "@types/react-table": "^7.0.29",
+    "@types/systemjs": "^6.1.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
+    "autoprefixer": "^9.7.2",
+    "aws-assume-role-cicd": "^1.0.4",
+    "babel-jest": "^27.0.5",
+    "better-npm-run": "^0.1.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "concurrently": "^6.2.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "enzyme": "^3.11.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-react-important-stuff": "^3.0.0",
+    "eslint-config-ts-react-important-stuff": "^3.0.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "is-ci": "^3.0.0",
+    "jest": "^27.0.5",
+    "jest-cli": "^27.0.5",
+    "jest-localstorage-mock": "^2.4.2",
+    "jest-react-hooks-shallow": "^1.5.1",
+    "lint-staged": "^10.2.8",
+    "mini-css-extract-plugin": "^1.6.1",
+    "node-sass": "^8.0.0",
+    "postcss": "^8.3.5",
+    "postcss-loader": "^6.0.0",
+    "prettier": "^2.3.2",
+    "pretty-quick": "^3.1.1",
+    "s3-deploy": "^1.4.0",
+    "sass-lint": "^1.13.1",
+    "sass-loader": "^13.2.0",
+    "simulant": "^0.2.2",
+    "typescript": "^4.0.0",
+    "typescript-plugin-css-modules": "^3.4.0",
+    "webpack": "^5.48.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-config-single-spa-react-ts": "^4.0.3",
+    "webpack-dev-server": "^4.8.0",
+    "webpack-merge": "^5.4.0"
+  },
+  "dependencies": {
+    "galactic-state": "^2.0.1",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-bootstrap": "^2.3.1",
+    "react-bootstrap-icons": "^1.5.0",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.10.1",
+    "react-pro-sidebar": "^0.7.1",
+    "react-query": "^3.39.1",
+    "react-responsive": "^8.2.0",
+    "react-router-dom": "6.3.0",
+    "react-table": "^7.7.0",
+    "react-tiny-fab": "^4.0.4",
+    "single-spa-react": "^4.2.0"
+  }
+}
