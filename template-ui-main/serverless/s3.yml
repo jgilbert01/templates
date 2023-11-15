@@ -1,0 +1,50 @@
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - s3:GetObject
+  Resource:
+    - Fn::GetAtt: [ WebsiteBucket, Arn ]
+    - Fn::Join:
+      - '/'
+      - - Fn::GetAtt: [ WebsiteBucket, Arn ]
+        - '*'
+
+resources:
+  Resources:
+    WebsiteBucket:
+      Type: AWS::S3::Bucket
+      DependsOn: [ Topic, TopicPolicy ]
+      Properties:
+        BucketName: ${self:custom.org}-${self:service}-${opt:stage}-${opt:region}
+        AccessControl: Private
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        NotificationConfiguration:
+          TopicConfigurations:
+            - Event: s3:ObjectCreated:Put
+              Filter:
+                S3Key:
+                  Rules:
+                    - Name: suffix
+                      Value: mfe.json
+              Topic:
+                Ref: Topic
+            # - Event: s3:ObjectRemoved:Delete
+            #   Filter:
+            #     S3Key:
+            #       Rules:
+            #         - Name: suffix
+            #           Value: mfe.json
+            #   Topic:
+            #     Ref: Topic
+
+  Outputs:
+    BucketName:
+      Value:
+        Ref: WebsiteBucket
+    BucketArn:
+      Value:
+        Fn::GetAtt: [ WebsiteBucket, Arn ]
+

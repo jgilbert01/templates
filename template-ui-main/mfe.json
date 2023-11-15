@@ -1,0 +1,21 @@
+{
+    "orgName": "template-ui",
+    "projectName": "main",
+    "imports": {
+        "single-spa": "/single-spa@5.9.3/lib/system/single-spa.min.js",
+        "react": "/react@17.0.2/umd/react.production.min.js",
+        "react-dom": "/react-dom@17.0.2/umd/react-dom.production.min.js",
+        "react-bootstrap": "/react-bootstrap@2.3.1/dist/react-bootstrap.min.js",
+        "react-bootstrap-typeahead": "/react-bootstrap-typeahead@5.2.0/dist/react-bootstrap-typeahead.min.js",
+        "react-datepicker": "/react-datepicker@3.7.0/dist/react-datepicker.min.js",
+        "react-hook-form": "/react-hook-form@7.31.0/dist/index.umd.js",
+        "react-table": "/react-table@7.7.0/dist/react-table.production.min.js",
+        "react-query": "/react-query@3.39.1/dist/react-query.production.min.js",
+        "moment": "/moment@2.29.3/min/moment.min.js",
+        "@fortawesome/fontawesome-svg-core": "/@fortawesome/fontawesome-svg-core@1.2.15/index.js",
+        "@fortawesome/free-solid-svg-icons": "/@fortawesome/free-solid-svg-icons@5.15.3/index.js",
+        "@fortawesome/react-fontawesome": "/@fortawesome/react-fontawesome@0.1.18/index.js",
+        "@template-ui/main": "/template-ui-main/SHA/template-ui-main.js",
+        "@template-ui/main/": "/template-ui-main/SHA/"
+    }
+}

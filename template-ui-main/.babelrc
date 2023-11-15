@@ -1,0 +1,39 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "useBuiltIns" : "entry",
+                "corejs": "3",
+                "targets": {
+                    "browsers": [
+                        ">0.2%",
+                        "not dead",
+                        "not op_mini all"
+                    ]
+                }
+            }
+        ],
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-syntax-import-meta",
+        "@babel/plugin-transform-react-constant-elements",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/transform-runtime"
+    ],
+    "env": {
+        "production": {
+            "plugins": [
+                "@babel/plugin-transform-react-inline-elements",
+                [
+                    "transform-react-remove-prop-types",
+                    {
+                        "removeImport": true
+                    }
+                ]
+            ]
+        }
+    }
+}

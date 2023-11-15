@@ -1,0 +1,4 @@
+role:
+  # permissionsBoundary: arn:${self:custom.partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-ServerlessRuntimeBoundary-${opt:stage}
+  statements:
+    - ${file(serverless/s3.yml):iamRoleStatements}

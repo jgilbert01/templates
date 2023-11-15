@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Apps Template</title>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="<%= faviconUrl %>" /> 
+      <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  <link rel="manifest" href="<%= manifestUrl %>" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!--
+    Remove this if you only support browsers that support async/await.
+    This is needed by babel to share largeish helper code for compiling async/await in older
+    browsers. More information at https://github.com/single-spa/create-single-spa/issues/112
+  -->
+  <script src="/regenerator-runtime@0.13.9/runtime.js"></script>
+
+  <!--
+    This CSP allows any SSL-enabled host and for arbitrary eval(), but you should limit these directives further to increase your app's security.
+    Learn more about CSP policies at https://content-security-policy.com/#directive
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; object-src 'none';">
+  -->
+  <meta name="importmap-type" content="systemjs-importmap" />
+
+  <script type="text/javascript">
+    function handleError() {
+      console.log('importmap either does not exist or invalid');
+    }
+  </script>
+
+  <!-- Add your organization's prod import map URL to this script's src  -->
+  <script type="systemjs-importmap" onerror="handleError()" src="<%= importmapUrl %>"></script>
+
+</head>
+
+<body>
+  <script src="/import-map-overrides@2.2.0/dist/import-map-overrides.js"></script>
+  <script src="/systemjs@6.12.1/dist/system.min.js"></script>
+  <script src="/systemjs@6.12.1/dist/extras/amd.min.js"></script>
+  <script src="/systemjs@6.12.1/dist/extras/global.min.js"></script>
+
+  <script>
+    System.import('@template-ui/main');
+  </script>
+
+  <div id="root"></div>
+</body>
+
+</html>

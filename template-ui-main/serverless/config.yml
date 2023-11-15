@@ -1,0 +1,36 @@
+params:
+  np:
+    debug: '*'
+    account: np
+    endpoint: ${opt:stage}-${opt:region}.${self:custom.dns.domainName}
+  prd:
+    debug: ''
+    account: prod
+    endpoint: ${self:params.prd.${opt:region}.endpoint}
+    us-west-2: 
+      endpoint: ${opt:stage}-${opt:region}.${self:custom.dns.domainName}
+    us-east-1: 
+      endpoint: ${self:custom.dns.domainName}
+
+spa:
+  # websiteBucketNameOutputRef: BucketName
+  acl: private
+  files:
+    - source: ./dist
+      # globs: '**/[!index]*'
+      globs: '**/*'
+      headers:
+        CacheControl: max-age=31536000,immutable # 1 year
+    - source: ./dist
+      globs: index.html
+      key: index.html
+      headers:
+        CacheControl: max-age=300 # 5 minutes
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: false
+  BUCKET_NAME: 
+    Ref: WebsiteBucket
