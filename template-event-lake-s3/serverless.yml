@@ -1,0 +1,16 @@
+service: ${self:custom.subsys}-event-lake-s3
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+  stackTags: ${file(serverless/tags.yml)}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+
+resources:
+  - ${file(serverless/s3.yml):resources}
+  - ${file(serverless/firehose.yml):resources}
+  - ${file(serverless/conditions.yml)}
