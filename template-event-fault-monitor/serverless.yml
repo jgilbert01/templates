@@ -1,0 +1,32 @@
+service: ${self:custom.subsys}-event-fault-monitor
+
+provider:
+  name: aws
+  # deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    # deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs16.x
+  logRetentionInDays: ${param:logRetentionInDays}
+  environment: ${file(serverless/config.yml):environment}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+
+package:
+  patterns:
+    - '!./**'
+    - src/transform/index.js
+
+functions:
+  transform:
+    handler: src/transform/index.handle
+    timeout: 120
+    environment: ${file(serverless/config.yml):environment}
+
+resources:
+  - ${file(serverless/s3.yml):resources}
+  - ${file(serverless/firehose.yml):resources}
+  - ${file(serverless/sns.yml):resources}
+  # - ${file(serverless/conditions.yml)}
