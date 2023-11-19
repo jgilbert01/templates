@@ -1,0 +1,29 @@
+{
+  "name": "template-event-lake-es",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf .serverless/",
+    "pretest": "npm run clean",
+    "test": "sls package -r us-west-2 -s np",
+    "test:ci": "eval \"$(assume-role) npm test\"",
+    "test:sls": "npm test",
+    "test:sls:ci": "eval \"$(assume-role) npm run test:sls\"",
+    "dp:np:e": "sls deploy --verbose -r us-east-1 -s np --force",
+    "dp:np:w": "sls deploy --verbose -r us-west-2 -s np --force",
+    "dp:prd:e": "sls deploy --verbose -r us-east-1 -s prd --force",
+    "dp:prd:w": "sls deploy --verbose -r us-west-2 -s prd --force",
+    "dp:np:e:ci": "eval \"$(assume-role) npm run dp:np:e\"",
+    "dp:np:w:ci": "eval \"$(assume-role) npm run dp:np:w\"",
+    "dp:prd:e:ci": "eval \"$(assume-role) npm run dp:prd:e\"",
+    "dp:prd:w:ci": "eval \"$(assume-role) npm run dp:prd:w\""
+  },
+  "devDependencies": {
+    "aws-assume-role-cicd": "^1.0.0",
+    "serverless": "^3.0.0"
+  },
+  "dependencies": {
+    "elasticsearch": "^14.2.1",
+    "http-aws-es": "^4.0.0"
+  }
+}

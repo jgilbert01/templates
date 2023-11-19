@@ -10,4 +10,4 @@ custom:
   partition: aws
   org: my
   subsys: template
-  # replication: ${file(serverless/s3.yml):replication}
+  replication: ${file(serverless/s3.yml):replication}
