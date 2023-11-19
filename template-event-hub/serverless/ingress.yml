@@ -9,6 +9,8 @@ resources:
         StreamEncryption:
           EncryptionType: KMS
           KeyId: alias/aws/kinesis
+        # StreamModeDetails:
+        #   StreamMode: ON_DEMAND
 
     # ----------
     # POLICIES
@@ -17,7 +19,7 @@ resources:
     BusIngressRole:
       Type: AWS::IAM::Role
       Properties:
-        PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-ServerlessRuntimeBoundary-${opt:stage}'
+        PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
         AssumeRolePolicyDocument:
           Statement:
             - Effect: Allow
