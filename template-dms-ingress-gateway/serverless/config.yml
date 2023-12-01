@@ -1,0 +1,40 @@
+params:
+  np:
+    debug: '*'
+    account: np # nonprod
+    shardCount: 1
+    serverName: tbd.us-west-2.rds.amazonaws.com
+    port: 5432
+    databaseName: tbd
+    userName: tbd
+  prd:
+    debug: ''
+    account: prod
+    shardCount: 1
+    serverName: tbd.us-west-2.rds.amazonaws.com
+    port: 5432
+    databaseName: tbd
+    userName: tbd
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  BUS_NAME: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busName}
+  BUS_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busArn}
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
+  # KMS_REGIONS: us-east-1,us-west-2
+  SERVER_NAME: ${param:serverName}
+  PORT: ${param:port}
+  DATABASE_NAME: ${param:databaseName}
+  USER_NAME: ${param:userName}

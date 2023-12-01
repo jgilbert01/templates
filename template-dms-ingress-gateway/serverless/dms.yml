@@ -1,0 +1,84 @@
+resources:
+  Resources:
+    SourceEndpoint:
+      Type: AWS::DMS::Endpoint
+      Properties:
+        EndpointIdentifier: ${self:service}-${opt:stage}-src
+        EndpointType: source
+        EngineName: postgres
+        ServerName: ${self:provider.environment.SERVER_NAME}
+        Port: ${self:provider.environment.PORT}
+        DatabaseName: ${self:provider.environment.DATABASE_NAME}
+        Username: ${self:provider.environment.USER_NAME}
+        Password: ${env:PWD}
+
+    ServiceAccessRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: dms.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: delivery
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - kinesis:PutRecord
+                    - kinesis:PutRecords
+                    - kinesis:DescribeStream
+                  Resource:
+                    - Fn::GetAtt: [ Stream, Arn ]
+
+    TargetEndpoint:
+      Type: AWS::DMS::Endpoint
+      Properties:
+        EndpointIdentifier: ${self:service}-${opt:stage}-tgt
+        EndpointType: target
+        EngineName: kinesis
+        KinesisSettings:
+          IncludeNullAndEmpty: true
+          ServiceAccessRoleArn:
+            Fn::GetAtt: [ ServiceAccessRole, Arn ]
+          StreamArn:
+            Fn::GetAtt: [ Stream, Arn ]
+          MessageFormat: JSON
+
+    DmsVpcRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: dms-vpc-role
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: dms.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole
+
+    ReplicationInstance:
+      Type: AWS::DMS::ReplicationInstance
+      DependsOn:
+        - DmsVpcRole
+      Properties:
+        ReplicationInstanceClass: dms.t3.micro
+
+    ReplicationTask:
+      Type: AWS::DMS::ReplicationTask
+      # DeletionPolicy: Retain
+      # Condition: IsReplicationTaskEnabled
+      Properties:
+        ReplicationTaskIdentifier: ${self:service}-${opt:stage}
+        MigrationType: cdc
+        ReplicationInstanceArn:
+          Ref: ReplicationInstance
+        SourceEndpointArn:
+          Ref: SourceEndpoint
+        TargetEndpointArn:
+          Ref: TargetEndpoint
+        ReplicationTaskSettings: ${file(serverless/mappings.js):replicationTaskSettings}
+        TableMappings: ${file(serverless/mappings.js):tableMappings}

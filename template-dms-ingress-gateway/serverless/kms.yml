@@ -1,0 +1,7 @@
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - kms:GenerateDataKey
+    - kms:Encrypt
+    - kms:Decrypt
+  Resource: ${self:provider.environment.MASTER_KEY_ARN}
