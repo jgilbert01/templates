@@ -21,20 +21,30 @@ resources:
       Type: AWS::Logs::ResourcePolicy
       Properties:
         PolicyName: ${self:service}-${opt:stage}-log
-        PolicyDocument:
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - delivery.logs.amazonaws.com
-                  - events.amazonaws.com
-              Action:
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - Fn::GetAtt: [ LogGroupEvents, Arn ]
-                - Fn::GetAtt: [ LogGroupFaults, Arn ]
-
+        PolicyDocument: !Sub |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": [
+                    "delivery.logs.amazonaws.com",
+                    "events.amazonaws.com"
+                  ]
+                },
+                "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": [
+                  "arn:${self:custom.partition}:logs:${opt:region}:${aws:accountId}:log-group:/aws/events/${self:service}-${opt:stage}-events:*",
+                  "arn:${self:custom.partition}:logs:${opt:region}:${aws:accountId}:log-group:/aws/events/${self:service}-${opt:stage}-faults:*"
+                ]
+              }
+            ]
+          }
+ 
     # ----------
     # RULES
     # ----------
