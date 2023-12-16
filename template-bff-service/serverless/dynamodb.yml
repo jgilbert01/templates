@@ -81,8 +81,8 @@ resources:
         Replicas:
           # - Region: ${opt:region} # when not replicating
           - Region: us-west-2
-            PointInTimeRecoverySpecification:
-              PointInTimeRecoveryEnabled: true
+            # PointInTimeRecoverySpecification:
+            #   PointInTimeRecoveryEnabled: true
           - Region: us-east-1
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:

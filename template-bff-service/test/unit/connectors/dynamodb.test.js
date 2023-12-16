@@ -57,6 +57,7 @@ describe('connectors/dynamodb.js', () => {
     expect(spy).to.have.been.calledOnce;
     expect(spy).to.have.been.calledWith({
       TableName: 't1',
+      IndexName: undefined,
       KeyConditionExpression: '#pk = :pk',
       ExpressionAttributeNames: { '#pk': 'pk' },
       ExpressionAttributeValues: { ':pk': '00000000-0000-0000-0000-000000000000' },
@@ -88,12 +89,14 @@ describe('connectors/dynamodb.js', () => {
         index: 'gsi1',
         keyName: 'discriminator',
         keyValue: 'thing',
+        limit: 1,
       });
 
     expect(spy).to.have.been.calledOnce;
     expect(spy).to.have.been.calledWith({
       TableName: 't1',
       IndexName: 'gsi1',
+      Limit: 1,
       ExclusiveStartKey: undefined,
       KeyConditionExpression: '#keyName = :keyName',
       ExpressionAttributeNames: { '#keyName': 'discriminator' },
@@ -104,6 +107,55 @@ describe('connectors/dynamodb.js', () => {
     expect(data).to.deep.equal({
       last: 'eyJwayI6IjEiLCJzayI6InRoaW5nIn0=',
       data: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      }],
+    });
+  });
+
+  it('should query - page 1 - below limit', async () => {
+    const spy = sinon.spy((params, cb) => cb(null, {
+      LastEvaluatedKey: { pk: '1', sk: 'thing' },
+      Items: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      }],
+    }));
+
+    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+
+    const data = await new Connector(debug('db'), 't1')
+      .query({
+        index: 'gsi1',
+        keyName: 'discriminator',
+        keyValue: 'thing',
+        limit: 2,
+      });
+
+    expect(spy).to.have.been.calledTwice;
+    expect(spy).to.have.been.calledWith({
+      TableName: 't1',
+      IndexName: 'gsi1',
+      Limit: 2,
+      ExclusiveStartKey: { pk: '1', sk: 'thing' },
+      KeyConditionExpression: '#keyName = :keyName',
+      ExpressionAttributeNames: { '#keyName': 'discriminator' },
+      ExpressionAttributeValues: { ':keyName': 'thing' },
+      FilterExpression: undefined,
+      ScanIndexForward: undefined,
+    });
+    expect(data).to.deep.equal({
+      last: 'eyJwayI6IjEiLCJzayI6InRoaW5nIn0=',
+      data: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      }, {
         pk: '1',
         sk: 'thing',
         name: 'thing1',
@@ -130,9 +182,75 @@ describe('connectors/dynamodb.js', () => {
         keyName: 'discriminator',
         keyValue: 'thing',
         last: 'eyJwayI6IjEiLCJzayI6InRoaW5nIn0=',
+        limit: 1,
       });
 
     expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
+      TableName: 't1',
+      IndexName: 'gsi1',
+      Limit: 1,
+      ExclusiveStartKey: { pk: '1', sk: 'thing' },
+      KeyConditionExpression: '#keyName = :keyName',
+      ExpressionAttributeNames: { '#keyName': 'discriminator' },
+      ExpressionAttributeValues: { ':keyName': 'thing' },
+      FilterExpression: undefined,
+      ScanIndexForward: undefined,
+    });
+    expect(data).to.deep.equal({
+      last: undefined,
+      data: [{
+        pk: '2',
+        sk: 'thing',
+        name: 'thing2',
+        timestamp: 1600051691001,
+      }],
+    });
+  });
+
+  it('should query all', async () => {
+    const responses = [
+      {
+        LastEvaluatedKey: { pk: '1', sk: 'thing' },
+        Items: [{
+          pk: '1',
+          sk: 'thing',
+          name: 'thing1',
+          timestamp: 1600051691001,
+        }],
+      },
+      {
+        Items: [{
+          pk: '2',
+          sk: 'thing',
+          name: 'thing2',
+          timestamp: 1600051691001,
+        }],
+      },
+    ];
+
+    const spy = sinon.spy((params, cb) => cb(null, responses.shift()));
+
+    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+
+    const data = await new Connector(debug('db'), 't1')
+      .queryAll({
+        index: 'gsi1',
+        keyName: 'discriminator',
+        keyValue: 'thing',
+      });
+
+    expect(spy).to.have.been.calledTwice;
+    // expect(spy).to.have.been.calledWith({
+    //   TableName: 't1',
+    //   IndexName: 'gsi1',
+    //   ExclusiveStartKey: undefined,
+    //   KeyConditionExpression: '#keyName = :keyName',
+    //   ExpressionAttributeNames: { '#keyName': 'discriminator' },
+    //   ExpressionAttributeValues: { ':keyName': 'thing' },
+    //   FilterExpression: undefined,
+    //   ScanIndexForward: undefined,
+    // });
     expect(spy).to.have.been.calledWith({
       TableName: 't1',
       IndexName: 'gsi1',
@@ -144,8 +262,13 @@ describe('connectors/dynamodb.js', () => {
       ScanIndexForward: undefined,
     });
     expect(data).to.deep.equal({
-      last: undefined,
       data: [{
+        pk: '1',
+        sk: 'thing',
+        name: 'thing1',
+        timestamp: 1600051691001,
+      },
+      {
         pk: '2',
         sk: 'thing',
         name: 'thing2',

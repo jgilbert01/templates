@@ -1,0 +1,13 @@
+params:
+  np:
+    account: np
+    logRetentionInDays: 3
+  prd:
+    account: prod
+    logRetentionInDays: 30
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  replication: ${file(serverless/s3.yml):replication}

@@ -1,0 +1,78 @@
+resources:
+  Resources:
+    LogGroupEvents: 
+      Type: AWS::Logs::LogGroup
+      Properties:
+        RetentionInDays: 30
+        LogGroupName: /aws/events/${self:service}-${opt:stage}-events
+        # KmsKeyId: 
+    LogGroupFaults: 
+      Type: AWS::Logs::LogGroup
+      Properties:
+        RetentionInDays: 30
+        LogGroupName: /aws/events/${self:service}-${opt:stage}-faults
+        # KmsKeyId: 
+
+    # ----------
+    # POLICIES
+    # ----------
+
+    LogResourcePolicy:
+      Type: AWS::Logs::ResourcePolicy
+      Properties:
+        PolicyName: ${self:service}-${opt:stage}-log
+        PolicyDocument: !Sub |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": [
+                    "delivery.logs.amazonaws.com",
+                    "events.amazonaws.com"
+                  ]
+                },
+                "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": [
+                  "arn:${self:custom.partition}:logs:${opt:region}:${aws:accountId}:log-group:/aws/events/${self:service}-${opt:stage}-events:*",
+                  "arn:${self:custom.partition}:logs:${opt:region}:${aws:accountId}:log-group:/aws/events/${self:service}-${opt:stage}-faults:*"
+                ]
+              }
+            ]
+          }
+ 
+    # ----------
+    # RULES
+    # ----------
+
+    LogRuleEvents:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName:
+          Ref: Bus
+        EventPattern:
+          detail:
+            type:
+              - anything-but: fault
+        State: ENABLED
+        Targets:
+          - Id: LogEvents
+            Arn: !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupEvents}'
+
+    LogRuleFaults:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName:
+          Ref: Bus
+        EventPattern:
+          detail:
+            type: 
+              - fault
+        State: ENABLED
+        Targets:
+          - Id: LogFaults
+            Arn: !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupFaults}'

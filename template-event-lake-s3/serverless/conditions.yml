@@ -1,0 +1,6 @@
+Conditions:
+  IsReplicationRegionDeployed:
+    Fn::Not:
+      - Fn::Equals:
+          - ${cf.${self:custom.replication.region.${opt:region}}:${self:service}-${opt:stage}.BucketName, 'no'}
+          - 'no'

@@ -1,0 +1,41 @@
+service: ${self:custom.subsys}-dms-ingress-gateway
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs16.x
+  logRetentionInDays: 30
+  environment: ${file(serverless/config.yml):environment}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+
+package:
+  individually: true
+
+plugins:
+  - serverless-webpack
+  - baton-vcr-serverless-plugin
+  - serverless-offline
+  - dms
+
+functions:
+  trigger:
+    handler: src/trigger/index.handle
+    # timeout: 120
+    # memorySize: 2048
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt: [ Stream, Arn ]
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+
+resources:
+  - ${file(serverless/kinesis.yml):resources}
+  - ${file(serverless/dms.yml):resources}

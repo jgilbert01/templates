@@ -1,0 +1,55 @@
+elasticsearch:
+  retentionDays: ${param:elasticRetentionDays}
+
+resources:
+  Resources:
+    Domain:
+      Type: AWS::OpenSearchService::Domain
+      # DeletionPolicy: Retain
+      UpdatePolicy:
+        EnableVersionUpgrade: true
+      Properties:
+        EngineVersion: Elasticsearch_7.10
+        ClusterConfig: 
+          DedicatedMasterEnabled: true
+          DedicatedMasterCount: ${param:masterInstanceCount}
+          DedicatedMasterType: ${param:masterInstanceType}
+          InstanceCount: ${param:instanceCount}
+          ZoneAwarenessEnabled: false
+          InstanceType: ${param:instanceType}
+        EBSOptions: 
+          EBSEnabled: true
+          # Iops: 0
+          VolumeSize: ${param:instanceSize}
+          VolumeType: gp2
+        EncryptionAtRestOptions: ${param:EncryptionAtRestOptions}
+        DomainEndpointOptions:
+          EnforceHTTPS: true
+        NodeToNodeEncryptionOptions:
+          Enabled: true            
+        # VPCOptions:
+        #   SubnetIds: ${self:custom.vpc.subnetIds}
+        #   SecurityGroupIds: ${self:custom.vpc.securityGroupIds}
+        AccessPolicies: 
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                AWS: '*'
+              Action: 'es:*'
+              Resource: 'arn:aws:es:${opt:region}:${aws:accountId}:domain/*/*'
+        AdvancedOptions: 
+          rest.action.multi.allow_explicit_index: true
+
+  Outputs:
+    DomainArn:
+      Value:
+        Fn::GetAtt: [ Domain, DomainArn ]
+    DomainEndpoint:
+      Value:
+        Fn::GetAtt: [ Domain, DomainEndpoint ]
+    KibanaEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Domain, DomainEndpoint ]
+            - /_plugin/kibana

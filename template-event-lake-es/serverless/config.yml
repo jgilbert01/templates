@@ -1,0 +1,38 @@
+params:
+  np:
+    account: np
+    debug: false
+    logRetentionInDays: 3
+    instanceType: t3.medium.search
+    instanceCount: 1
+    instanceSize: 30
+    masterInstanceType: t3.medium.search
+    masterInstanceCount: 3
+    elasticRetentionDays: 2
+    EncryptionAtRestOptions:
+      Enabled: false
+  prod:
+    account: prod
+    debug: false
+    logRetentionInDays: 30
+    instanceType: m5.large.search
+    instanceCount: 6
+    instanceSize: 512
+    masterInstanceType: m5.large.search
+    masterInstanceCount: 3
+    elasticRetentionDays: 30
+    EncryptionAtRestOptions:
+      Enabled: true
+      # KmsKeyId: ${cf:template-global-resources-${opt:stage}.MasterKeyAlias}
+
+custom:
+  org: my
+  subsys: template
+  elasticsearch: ${file(serverless/oss.yml):elasticsearch}
+  # vpc: ${file(serverless/vpc.yml)}
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1

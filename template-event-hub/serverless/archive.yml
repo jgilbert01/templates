@@ -1,0 +1,13 @@
+resources:
+  Resources:
+    Archive:
+      Type: AWS::Events::Archive
+      Properties:
+        ArchiveName: ${self:service}-${opt:stage}-archive
+        # RetentionDays: 92
+        SourceArn:
+          Fn::GetAtt: [ Bus, Arn ]
+        EventPattern:
+          detail:
+            type:
+              - anything-but: fault

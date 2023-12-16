@@ -192,6 +192,7 @@ describe('models/thing.js', () => {
       keyName: 'discriminator',
       keyValue: 'thing',
       last: undefined,
+      limit: undefined,
     });
     expect(data).to.deep.equal({
       last: undefined,

@@ -1,0 +1,11 @@
+resources:
+  Resources:
+    Stream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:service}-${opt:stage}
+        RetentionPeriodHours: 24
+        ShardCount: ${param:shardCount}
+        StreamEncryption:
+          EncryptionType: KMS
+          KeyId: alias/aws/kinesis

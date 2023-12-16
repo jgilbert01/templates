@@ -1,0 +1,19 @@
+iamRoleStatements:
+  Effect: Allow
+  Action: sns:Publish
+  Resource: 
+    Ref: Topic
+
+resources:
+  Resources:
+    Topic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}-${opt:stage}.fifo
+        FifoTopic: true
+        # KmsMasterKeyId: alias/aws/sns
+
+  Outputs:
+    TopicArn:
+      Value:
+        Ref: Topic

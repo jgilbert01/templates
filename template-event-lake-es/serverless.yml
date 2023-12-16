@@ -1,0 +1,33 @@
+service: ${self:custom.subsys}-event-lake-es
+
+provider:
+  name: aws
+  # deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  # iam:
+  #   deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs18.x
+  logRetentionInDays: ${param:logRetentionInDays}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+
+plugins:
+  - elasticsearch # local plugin
+
+package:
+  patterns:
+    - '!./**'
+    - src/transform/index.js
+
+functions:
+  transform:
+    handler: src/transform/index.handle
+    timeout: 120
+    environment: ${file(serverless/config.yml):environment}
+
+resources:
+  - ${file(serverless/oss.yml):resources}
+  - ${file(serverless/s3.yml):resources}
+  - ${file(serverless/firehose.yml):resources}
+  # - ${file(serverless/cw.yml):resources}

@@ -1,0 +1,25 @@
+params:
+  np:
+    account: np
+    debug: false
+    logRetentionInDays: 3
+  prd:
+    account: prod
+    debug: false
+    logRetentionInDays: 30
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  # replication: ${file(serverless/s3.yml):replication}
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  NAMESPACE: ${self:custom.subsys}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  TOPIC_ARN:
+    Ref: Topic
