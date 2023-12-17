@@ -8,7 +8,7 @@ resources:
 
     GlobalDistribution:
       Type: AWS::CloudFront::Distribution
-      Condition: IsWestAndHasEastCertificate
+      Condition: IsEast
       Properties:
         DistributionConfig:
           Comment: Global Main SPA ${opt:stage}-${self:service} (${opt:region})
@@ -199,7 +199,7 @@ resources:
 
   Outputs:
     GlobalDistributionId:
-      Condition: IsWestAndHasEastCertificate
+      Condition: IsEast
       Value:
         Ref: GlobalDistribution
     RegionalDistributionId:

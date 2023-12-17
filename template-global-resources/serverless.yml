@@ -8,13 +8,7 @@ provider:
   stackTags: ${file(serverless/tags.yml)}
 
 params: ${file(serverless/config.yml):params}
-custom:
-  partition: aws
-  org: my
-  subsys: template
-  failover:
-    us-west-2: us-east-1
-    us-east-1: us-west-2 
+custom: ${file(serverless/config.yml):custom}
 
 resources:
   # - ${file(serverless/kms.yml):resources}
@@ -24,5 +18,6 @@ resources:
   - ${file(serverless/cloudfront.yml):resources}
   # - ${file(serverless/apig.yml):resources}
 
+  # - ${file(serverless/waf.yml):resources}
   # - ${file(serverless/backup.yml):resources}
   - ${file(serverless/conditions.yml)}

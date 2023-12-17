@@ -1,6 +1,6 @@
 params:
-  dev:
-    account: dev # nonprod
+  np:
+    account: np # nonprod
     domainName: ${self:custom.subsys}-${opt:stage}.${self:custom.org}.com
     hostedZoneId: ${self:params.dev.${opt:region}.hostedZoneId}
     loggingBucket: ${self:params.dev.${opt:region}.loggingBucket}
@@ -10,10 +10,12 @@ params:
         Ref: HostedZone
       loggingBucket: tbd
       webACLId: tbd
+        # Ref: WebACL
     us-east-1:
-      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-dev.HostedZoneId}
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-dev.HostedZoneId, 'UNDEFINED'}
       loggingBucket: tbd
       webACLId: tbd
+        # Ref: WebACL
 
   prd:
     account: prod
@@ -26,7 +28,17 @@ params:
         Ref: HostedZone
       loggingBucket: tbd
       webACLId: tbd
+        # Ref: WebACL
     us-east-1: 
-      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-prd.HostedZoneId}
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-prd.HostedZoneId, 'UNDEFINED'}
       loggingBucket: tbd
       webACLId: tbd
+        # Ref: WebACL
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  failover:
+    us-west-2: us-east-1
+    us-east-1: us-west-2 
