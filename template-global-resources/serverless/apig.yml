@@ -1,0 +1,51 @@
+resources:
+  Resources:
+    ApiGatewayLoggingRole:
+      Type: AWS::IAM::Role
+      Properties: 
+        PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
+        AssumeRolePolicyDocument:
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                Service: 
+                  - apigateway.amazonaws.com
+              Action: 
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'
+    ApiGatewayAccountSettings:
+      Type: AWS::ApiGateway::Account
+      Properties:
+        CloudWatchRoleArn: 
+          Fn::GetAtt: [ ApiGatewayLoggingRole, Arn ]
+
+    ApiGlobalDomainName:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        DomainName: ${opt:stage}-api.${param:domainName}
+        RegionalCertificateArn:
+          Ref: Certificate
+        SecurityPolicy: TLS_1_2
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+
+    ApiRegionalDomainName:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        DomainName: ${opt:region}-${opt:stage}-api.${param:domainName}
+        RegionalCertificateArn:
+          Ref: Certificate
+        SecurityPolicy: TLS_1_2
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+
+  Outputs:
+    ApiGlobalDomainName:
+      Value:
+        Ref: ApiGlobalDomainName
+    ApiRegionalDomainName:
+      Value:
+        Ref: ApiRegionalDomainName

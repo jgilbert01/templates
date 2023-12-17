@@ -1,0 +1,31 @@
+Conditions:
+  IsWest:
+    Fn::Equals:
+      - ${opt:region}
+      - us-west-2
+  IsWestDev:
+    Fn::And:
+      - Fn::Equals:
+        - ${opt:stage}
+        - dev
+      - Fn::Equals:
+        - ${opt:region}
+        - us-west-2
+  IsEast:
+    Fn::Equals:
+      - ${opt:region}
+      - us-east-1
+  IsWestAndHasEastCertificate:
+    Fn::And:
+      - Fn::Equals:
+        - ${opt:region}
+        - us-west-2
+      - Fn::Not:
+        - Fn::Equals:
+          - ${cf(us-east-1):${self:custom.subsys}-global-resources-${opt:stage}.CertificateArn, 'UNDEFINED'}
+          - UNDEFINED
+  HasEastCertificate:
+    Fn::Not:
+      - Fn::Equals:
+        - ${cf(us-east-1):${self:custom.subsys}-global-resources-${opt:stage}.CertificateArn, 'UNDEFINED'}
+        - UNDEFINED

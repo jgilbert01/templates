@@ -1,0 +1,44 @@
+params:
+  np:
+    account: np # nonprod
+    domainName: ${self:custom.subsys}-${opt:stage}.${self:custom.org}.com
+    hostedZoneId: ${self:params.dev.${opt:region}.hostedZoneId}
+    loggingBucket: ${self:params.dev.${opt:region}.loggingBucket}
+    webACLId: ${self:params.dev.${opt:region}.webACLId}
+    us-west-2:
+      hostedZoneId: 
+        Ref: HostedZone
+      loggingBucket: tbd
+      webACLId: tbd
+        # Ref: WebACL
+    us-east-1:
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-dev.HostedZoneId, 'UNDEFINED'}
+      loggingBucket: tbd
+      webACLId: tbd
+        # Ref: WebACL
+
+  prd:
+    account: prod
+    domainName: ${self:custom.subsys}.${self:custom.org}.com
+    hostedZoneId: ${self:params.prd.${opt:region}.hostedZoneId}
+    loggingBucket: ${self:params.prd.${opt:region}.loggingBucket}
+    webACLId: ${self:params.prd.${opt:region}.webACLId}
+    us-west-2: 
+      hostedZoneId: 
+        Ref: HostedZone
+      loggingBucket: tbd
+      webACLId: tbd
+        # Ref: WebACL
+    us-east-1: 
+      hostedZoneId: ${cf(us-west-2):${self:custom.subsys}-global-resources-prd.HostedZoneId, 'UNDEFINED'}
+      loggingBucket: tbd
+      webACLId: tbd
+        # Ref: WebACL
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  failover:
+    us-west-2: us-east-1
+    us-east-1: us-west-2 

@@ -1,0 +1,43 @@
+resources:
+  Resources:
+    WhitelistIPSet:
+      Type: AWS::WAFv2::IPSet
+      Condition: IsEast
+      Properties: 
+        Name: ${self:service}
+        Addresses:
+          - 0.0.0.1/32
+        IPAddressVersion: IPV4
+        Scope: CLOUDFRONT
+
+    WebACL: 
+      Type: AWS::WAFv2::WebACL
+      Condition: IsEast
+      Properties: 
+        Name: ${self:service}
+        DefaultAction: 
+          Block: {}
+        Rules: 
+          - Action: 
+              Allow: {}
+            Name: WhitelistRule
+            Priority: 1
+            Statement:
+              IPSetReferenceStatement: 
+                Arn: 
+                  Fn::GetAtt: [ WhitelistIPSet, Arn ]
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: false
+              MetricName: WhitelistRule
+              SampledRequestsEnabled: false
+        Scope: CLOUDFRONT
+        VisibilityConfig: 
+          CloudWatchMetricsEnabled: false
+          MetricName: MasterWebACL
+          SampledRequestsEnabled: false    
+
+  Outputs:
+    WebACLId:
+      Condition: IsEast
+      Value:
+        Ref: WebACL
