@@ -1,0 +1,201 @@
+# this is the role that cloudformation assumes
+# with the least privilege to create resources in a given Stack
+# this role is refereneced in a service's serverless/cfn.yml file
+resources:
+  Resources:
+    CloudFormationExecutionRole: # DeploymentExecutionRole
+      Type: AWS::IAM::Role
+      Condition: IsWest
+      Properties: 
+        RoleName: ${self:custom.subsys}-cfn-exec-${opt:stage}
+        AssumeRolePolicyDocument:
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                Service: 
+                  - cloudformation.amazonaws.com
+              Action: 
+                - sts:AssumeRole
+        Policies:
+          - PolicyName: exec
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    # - 'access-analyzer:*'
+                    - 'acm:*'
+                    # - 'acm-pca:*'
+                    - 'apigateway:*'
+                    # - 'appflow:*'
+                    # - 'application-autoscaling:*'
+                    # - 'appsync:*'
+                    - 'athena:*'
+                    # - 'autoscaling:*'
+                    # - 'autoscaling-plans:*'
+                    # - 'aws-marketplace:*'
+                    # - 'aws-portal:*'
+                    - 'backup:*'
+                    - 'backup-storage:*'
+                    # - 'batch:*'
+                    # - 'budgets:*'
+                    # - 'ce:*'
+                    - 'cloudformation:*'
+                    - 'cloudfront:*'
+                    # - 'cloudshell:*'
+                    - 'cloudtrail:*'
+                    - 'cloudwatch:*'
+                    # - 'codepipeline:*'
+                    - 'codebuild:*'
+                    - 'codecommit:*'
+                    # - 'codedeploy:*'
+                    - 'cognito-identity:*'
+                    - 'cognito-idp:*'
+                    # - 'compute-optimizer:*'
+                    # - 'config:*'
+                    # - 'cur:*'
+                    # - 'databrew:*'
+                    # - 'dax:*'
+                    # - 'detective:*'
+                    # - 'devicefarm:*'
+                    # - 'directconnect:*'
+                    # - 'dms:*'
+                    - 'dynamodb:*'
+                    # - 'ebs:*'
+                    - 'ec2:Describe*'
+                    # - 'ec2messages:*'
+                    # - 'ecr:*'
+                    # - 'ecs:*'
+                    # - 'eks:*'
+                    # - 'elasticache:*'
+                    # - 'elasticfilesystem:*'
+                    - 'elasticloadbalancing:*'
+                    # - 'elasticmapreduce:*'
+                    - 'es:*'
+                    - 'events:*'
+                    - 'execute-api:*'
+                    - 'firehose:*'
+                    # - 'fms:*'
+                    - 'glacier:*'
+                    - 'glue:*'
+                    # - 'greengrass:*'
+                    # - 'groundtruthlabeling:*'
+                    # - 'guardduty:*'
+                    # - 'iam:*'
+                    # - 'inspector:*'
+                    # - 'iotevents:*'
+                    # - 'health:*'
+                    # - 'kafka:*'
+                    - 'kms:*'
+                    - 'kinesis:*'
+                    # - 'kinesisanalytics:*'
+                    # - 'lakeformation:*'
+                    - 'lambda:*'
+                    # - 'license-manager:*'
+                    - 'logs:*'
+                    # - 'macie:*'
+                    # - 'mq:*'
+                    # - 'neptune-db:*'
+                    # - 'organizations:*'
+                    # - 'pi:*'
+                    # - 'quicksight:*'
+                    # - 'ram:*'
+                    # - 'resource-explorer:*'
+                    # - 'resource-groups:*'
+                    # - 'rds:*'
+                    - 'route53:*'
+                    # - 'route53resolver:*'
+                    - 's3:*'
+                    # - 'sagemaker:*'
+                    # - 'savingsplans:*'
+                    # - 'schemas:*'
+                    - 'secretsmanager:*'
+                    # - 'servicecatalog:*'
+                    # - 'servicequotas:*'
+                    - 'ses:*'
+                    # - 'securityhub:*'
+                    # - 'shield:*'
+                    - 'sns:*'
+                    - 'sqs:*'
+                    - 'ssm:*'
+                    - 'ssmmessages:*'
+                    # - 'states:*'
+                    # - 'sts:*'
+                    # - 'support:*'
+                    - 'synthetics:*'
+                    # - 'tag:*'
+                    # - 'tiros:*'
+                    # - 'transfer:*'
+                    # - 'trustedadvisor:*'
+                    # - 'vpc:*'
+                    # - 'waf:*'
+                    # - 'wafv2:*'
+                    # - 'waf-regional:*'
+                    # - 'wellarchitected:*'
+                    - 'xray:*'
+                  Resource: '*'
+                # https://github.com/aws-samples/example-permissions-boundary
+                - Effect: Allow
+                  Action:
+                    - iam:CreateServiceLinkedRole
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/aws-service-role/*'
+                - Effect: Allow
+                  Action:
+                    - iam:*Role*
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-*'
+                - Effect: Allow
+                  Action:
+                    - iam:*Policy*
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-*'
+                - Effect: Deny
+                  Action:
+                    # - iam:AttachRolePolicy
+                    - iam:CreateRole
+                    - iam:DeleteRolePolicy
+                    - iam:DetachRolePolicy
+                    # - iam:PutRolePermissionsBoundary
+                    - iam:PutRolePolicy
+                    - iam:UpdateRole
+                  NotResource:
+                    # - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-test-${opt:stage}'
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}'
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-deploy-${opt:stage}'
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-backup-${opt:stage}'
+                  Condition:
+                    StringNotEquals:
+                      iam:PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
+                - Effect: Deny
+                  Action:
+                    - iam:DeleteRolePermissionsBoundary
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-*'
+                  Condition:
+                    StringEquals:
+                      iam:PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
+                - Effect: Allow # only needed for hosted cicd like gitlab
+                  Action:
+                    - iam:CreateUser
+                    - iam:DeleteUser
+                    - iam:UpdateUser
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:user/${self:custom.subsys}-pipeline-resources-${opt:stage}-CiCdUser-*'
+
+  Outputs:
+    CloudFormationExecutionRoleArn:
+      Condition: IsWest
+      Value:
+        Fn::GetAtt: [ CloudFormationExecutionRole, Arn ]
+
+# ***************************************************************
+# https://github.com/aws-samples/example-permissions-boundary
+# https://aws.amazon.com/blogs/security/how-to-implement-the-principle-of-least-privilege-with-cloudformation-stacksets
+# *** athena cloudtrail query ***
+# *** for debugging cloudformation permission boundary change ***
+# SELECT eventtime, eventsource, eventname, requestparameters
+# FROM cloudtrail_logs_aws_cloudtrail_logs_205334275447_dad070a7
+# WHERE sourceIPAddress = 'cloudformation.amazonaws.com' 
+# AND eventsource = 'iam.amazonaws.com'
+# ORDER BY eventtime desc;
+# ***************************************************************

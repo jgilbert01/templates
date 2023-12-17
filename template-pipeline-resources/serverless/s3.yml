@@ -1,0 +1,22 @@
+resources:
+  Resources:
+    Bucket:
+      Type: AWS::S3::Bucket
+      # DeletionPolicy: Retain
+      Properties:
+        BucketName: ${file(serverless/cfn.yml):deploymentBucket.name}
+        AccessControl: Private
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        VersioningConfiguration:
+          Status: Enabled
+
+  Outputs:
+    BucketName:
+      Value:
+        Ref: Bucket
+    BucketArn:
+      Value:
+        Fn::GetAtt: [ Bucket, Arn ]

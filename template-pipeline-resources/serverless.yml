@@ -1,0 +1,21 @@
+service: ${self:custom.subsys}-pipeline-resources
+
+provider:
+  name: aws
+  # deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  # iam:
+  #   deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+  stackTags: ${file(serverless/tags.yml)}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/custom.yml):params}
+
+resources:
+  - ${file(serverless/s3.yml):resources}
+  # - ${file(serverless/iam/boundary.yml):resources}
+  # - ${file(serverless/iam/deploy.yml):resources}
+  # - ${file(serverless/iam/exec.yml):resources}
+  # - ${file(serverless/iam/user.yml):resources}
+
+  - ${file(serverless/conditions.yml)}
+  - ${file(serverless/outputs.yml)}

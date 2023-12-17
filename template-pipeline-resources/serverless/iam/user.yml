@@ -1,0 +1,6 @@
+resources:
+  Resources:
+    CiCdUser: 
+      Type: AWS::IAM::User
+      # Condition: IsWest
+
