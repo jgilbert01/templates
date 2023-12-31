@@ -1,0 +1,9 @@
+deploymentBucket: 
+  name: ${self:custom.org}-${self:custom.subsys}-sls-deploy-${opt:stage}-${opt:region}
+
+deploymentRole: arn:${self:custom.partition}:iam::${aws:accountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}
+
+cfn:
+  esm: 
+    function: ${self:custom.subsys}-custom-resources-${opt:stage}-esm
+    # enabled: stg # comma separated list of stages

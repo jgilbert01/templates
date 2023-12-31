@@ -1,0 +1,61 @@
+service: ${self:custom.subsys}-control-service
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs16.x
+  logRetentionInDays: ${param:logRetentionInDays}
+  environment: ${file(serverless/config.yml):environment}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+package:
+  individually: true
+
+plugins:
+  - serverless-aws-describe-plugin
+  # - serverless-kinesis-esm-plugin
+  - serverless-webpack
+  - baton-vcr-serverless-plugin
+  - serverless-offline
+
+functions:
+  listener:
+    handler: src/listener/index.handle
+    events:
+      - stream:
+          type: kinesis
+          arn: ${self:provider.environment.STREAM_ARN}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          filterPatterns:
+            - data:
+                type:
+                   - prefix: 'thing-'
+    #   - sqs:
+    #       arn:
+    #         Fn::GetAtt: [ ListenerQueue, Arn ]
+    # #       functionResponseType: ReportBatchItemFailures
+  trigger:
+    handler: src/trigger/index.handle
+    events:
+      - stream:
+          type: dynamodb
+          arn: ${self:custom.tableStreamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          filterPatterns: ${file(serverless/dynamodb.yml):filterPatterns}
+  # job:
+  #   handler: src/job/index.handle
+  #   events:
+  #     - schedule:
+  #         rate: ${self:custom.cron.${opt:region}}
+
+resources:
+  - ${file(serverless/sqs-listener.yml):resources}
+  - ${file(serverless/dynamodb.yml):resources}
+  - ${file(serverless/conditions.yml)}

@@ -1,0 +1,36 @@
+params:
+  np:
+    debug: '*'
+    account: np # nonprod
+    logRetentionInDays: 3
+  prd:
+    debug: ''
+    account: prod
+    logRetentionInDays: 30
+ 
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+  tableArn: ${file(serverless/dynamodb.yml):tableArn.${opt:region}}
+  tableStreamArn: ${file(serverless/dynamodb.yml):tableStreamArn.${opt:region}}
+  # cfn: ${file(serverless/cfn.yml):cfn}
+  # cron: ${file(serverless/cron.yml):cron}
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  EVENT_TABLE_NAME: ${self:service}-${opt:stage}-events
+  # EVENTS_DATA_INDEX: gsi1
+  USER_POOL: ${cf(us-west-2):${self:custom.subsys}-cognito-resources-${opt:stage}.userPoolArn}
+  BUS_NAME: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busName}
+  BUS_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busArn}
+  STREAM_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.stream1Arn}
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
+  # KMS_REGIONS: us-east-1,us-west-2
