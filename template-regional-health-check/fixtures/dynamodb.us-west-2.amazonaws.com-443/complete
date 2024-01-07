@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.UpdateItem
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-regional-health-check-np-entities\",\"Key\":{\"pk\":{\"S\":\"us-west-2\"},\"sk\":{\"S\":\"1668461460000\"}},\"ExpressionAttributeNames\":{\"#status\":\"status\",\"#discriminator\":\"discriminator\",\"#timestamp\":\"timestamp\",\"#latency\":\"latency\",\"#latched\":\"latched\",\"#ttl\":\"ttl\",\"#awsregion\":\"awsregion\"},\"ExpressionAttributeValues\":{\":status\":{\"S\":\"COMPLETED\"},\":discriminator\":{\"S\":\"trace\"},\":timestamp\":{\"N\":\"1668461435080\"},\":latency\":{\"N\":\"0.001\"},\":latched\":{\"BOOL\":true},\":ttl\":{\"N\":\"1676410235\"},\":awsregion\":{\"S\":\"us-west-2\"}},\"UpdateExpression\":\"SET #status = :status, #discriminator = :discriminator, #timestamp = :timestamp, #latency = :latency, #latched = :latched, #ttl = :ttl, #awsregion = :awsregion\",\"ReturnValues\":\"ALL_NEW\",\"ConditionExpression\":\"attribute_not_exists(#timestamp) OR #timestamp < :timestamp\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Tue, 15 Nov 2022 14:47:26 GMT
+content-type: application/x-amz-json-1.0
+content-length: 236
+connection: keep-alive
+x-amzn-requestid: 1HL0AVC1TLJQIEGKSJD2CKA9H7VV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 3436686751
+
+{"Attributes":{"status":{"S":"COMPLETED"},"timestamp":{"N":"1668461435080"},"latency":{"N":"0.001"},"awsregion":{"S":"us-west-2"},"sk":{"S":"1668461460000"},"ttl":{"N":"1676410235"},"discriminator":{"S":"trace"},"latched":{"BOOL":true},"pk":{"S":"us-west-2"}}}

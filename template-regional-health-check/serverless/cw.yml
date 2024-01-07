@@ -1,0 +1,130 @@
+resources:
+  Resources:
+    # -----------------------
+    # api gateway
+    # -----------------------
+    Apig5xxAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: ${self:service}-${opt:stage}-Apig5xxAlarm
+        Namespace: AWS/ApiGateway
+        MetricName: 5XXError
+        Dimensions: 
+          - Name: ApiName
+            Value: ${opt:stage}-${self:service}
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        Period: 60 # seconds
+        EvaluationPeriods: 5
+        Statistic: Sum
+        Unit: Count
+        TreatMissingData: notBreaching
+    ApigHealthCheck:
+      DependsOn: Apig5xxAlarm
+      Type: AWS::Route53::HealthCheck
+      Properties:
+        HealthCheckConfig:
+          Type: CLOUDWATCH_METRIC
+          AlarmIdentifier:
+            Name:
+              Ref: Apig5xxAlarm
+            Region: ${opt:region}
+          InsufficientDataHealthStatus: LastKnownStatus
+
+    # other candidate services
+
+    # -----------------------
+    # dynamodb
+    # -----------------------
+    DynamoDB5xxAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: ${self:service}-${opt:stage}-DynamoDB5xxAlarm
+        Namespace: AWS/DynamoDB
+        MetricName: SystemErrors
+        Dimensions: 
+        - Name: TableName
+          Value: ${self:service}-${opt:stage}-entities
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        Period: 60 # seconds
+        EvaluationPeriods: 5
+        Statistic: Sum
+        Unit: Count
+        TreatMissingData: notBreaching
+    DynamoDBHealthCheck:
+      DependsOn: DynamoDB5xxAlarm
+      Type: AWS::Route53::HealthCheck
+      Properties:
+        HealthCheckConfig:
+          Type: CLOUDWATCH_METRIC
+          AlarmIdentifier:
+            Name:
+              Ref: DynamoDB5xxAlarm
+            Region: ${opt:region}
+          InsufficientDataHealthStatus: LastKnownStatus
+
+    # other candidate tables
+
+    # -----------------------
+    # regional
+    #   Note: route53 health check does not support metrics math or composite alarms
+    #   https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/health-checks-creating-values.html#health-checks-creating-values-cloudwatch
+    # -----------------------
+    RegionalHealthAlarm:
+      Type: AWS::CloudWatch::CompositeAlarm
+      Properties:
+        AlarmName: ${self:service}-${opt:stage}-${opt:region}
+        AlarmRule: ALARM(${self:service}-${opt:stage}-Apig5xxAlarm) OR ALARM(${self:service}-${opt:stage}-DynamoDB5xxAlarm)
+      DependsOn:
+        - Apig5xxAlarm
+        - DynamoDB5xxAlarm
+
+    RegionalHealthCheck:
+      Type: AWS::Route53::HealthCheck
+      Properties:
+        HealthCheckConfig:
+          Type: CALCULATED
+          HealthThreshold: 2 # MUST EQUAL NUMBER OF CHILDREN
+          ChildHealthChecks:
+          - Ref: ApigHealthCheck
+          - Ref: DynamoDBHealthCheck
+      DependsOn: 
+        - ApigHealthCheck
+        - DynamoDBHealthCheck
+
+    # -----------------------
+    # these are here for backwards compatibility
+    # and will be removed in a follow on task
+    # -----------------------
+    Api5xxAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        Namespace: AWS/ApiGateway
+        MetricName: 5XXError
+        Dimensions:
+          - Name: ApiName
+            Value: ${opt:stage}-template-roles-permissions-service
+        Statistic: Minimum
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        Period: 60
+        EvaluationPeriods: 1
+    ApiHealthCheck:
+      DependsOn: Api5xxAlarm
+      Type: AWS::Route53::HealthCheck
+      Properties:
+        HealthCheckConfig:
+          Type: CLOUDWATCH_METRIC
+          AlarmIdentifier:
+            Name: !Ref Api5xxAlarm
+            Region: ${opt:region}
+          InsufficientDataHealthStatus: LastKnownStatus
+
+  Outputs:
+    HealthAlarm:
+      Value: !Ref RegionalHealthAlarm
+    HealthCheckId:
+      Value: !Ref ApiHealthCheck # RegionalHealthCheck
+    HealthCheckIdV2:
+      Value: !Ref RegionalHealthCheck

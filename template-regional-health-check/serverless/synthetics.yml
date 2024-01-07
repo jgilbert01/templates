@@ -1,0 +1,97 @@
+resources:
+  Resources:
+    CloudWatchSyntheticsRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage}-${opt:region}-synthetics-role
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: synthetics
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:GetObject
+                    - s3:PutObject
+                  Resource:
+                    - Fn::Sub: arn:aws:s3:::${Bucket}/*
+                - Effect: Allow
+                  Action:
+                    - s3:GetBucketLocation
+                  Resource:
+                    - Fn::Sub: arn:aws:s3:::${Bucket}
+                - Effect: Allow
+                  Action:
+                    - s3:ListAllMyBuckets
+                  Resource: '*'
+                - Effect: Allow
+                  Resource: '*'
+                  Action: cloudwatch:PutMetricData
+                  Condition:
+                    StringEquals:
+                      cloudwatch:namespace: CloudWatchSynthetics
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                    - logs:CreateLogGroup
+                  Resource:
+                    - Fn::Sub: arn:aws:logs:${opt:region}:${aws:accountId}:log-group:/aws/lambda/cwsyn-regional-health-check-*
+
+    Canary:
+      Type: AWS::Synthetics::Canary
+      Properties: 
+        Name: regional-health-check
+        Code:
+          Handler: exports.handler
+          Script: |
+            const synthetics = require('Synthetics');
+            
+            exports.handler = async function(event) {
+              return await synthetics.executeHttpStep(
+                'call health check', 
+                {
+                  'hostname': '${self:params.${opt:stage}.${opt:region}.healthCheckEndpoint}',
+                  'method': 'GET',
+                  'path': '/${opt:stage}/check',
+                  'port': 443,
+                  'protocol': 'https:',
+                  'headers': {
+                    'x-api-key': process.env.API_KEY,
+                  }
+                }, 
+                undefined, 
+                {
+                  includeRequestHeaders: true,
+                  includeResponseHeaders: true,
+                  restrictedHeaders: ['X-Api-Key', 'X-Amz-Security-Token', 'Authorization'],
+                  includeRequestBody: true,
+                  includeResponseBody: true
+                }
+              );
+            }
+        ExecutionRoleArn:
+          Fn::GetAtt:
+            - CloudWatchSyntheticsRole
+            - Arn
+        RuntimeVersion: syn-nodejs-puppeteer-3.8
+        RunConfig:
+          TimeoutInSeconds: 60
+          EnvironmentVariables:
+            API_KEY: ${self:params.${opt:stage}.apiKeys.0.value}
+        ArtifactS3Location:
+          Fn::Join:
+            - ''
+            - - s3://
+              - Ref: Bucket
+        StartCanaryAfterCreation: true
+        Schedule:
+          Expression: cron(* * * * ?) # every minute
+          DurationInSeconds: 0 # run indefinitely
+        SuccessRetentionPeriod: 92
+        FailureRetentionPeriod: 92

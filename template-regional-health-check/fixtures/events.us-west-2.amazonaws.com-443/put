@@ -1,0 +1,13 @@
+POST /
+content-type: application/x-amz-json-1.1
+x-amz-target: AWSEvents.PutEvents
+host: events.us-west-2.amazonaws.com
+body: {\"Entries\":[{\"EventBusName\":\"template-regional-health-check-np-bus\",\"Source\":\"custom\",\"DetailType\":\"trace-created\",\"Detail\":\"{\\\"id\\\":\\\"b31620aefda12855fab119eb78ddae5b\\\",\\\"type\\\":\\\"trace-created\\\",\\\"partitionKey\\\":\\\"us-west-2\\\",\\\"timestamp\\\":1668461435000,\\\"tags\\\":{\\\"account\\\":\\\"np\\\",\\\"region\\\":\\\"us-west-2\\\",\\\"stage\\\":\\\"np\\\",\\\"source\\\":\\\"template-regional-health-check\\\",\\\"functionname\\\":\\\"undefined\\\",\\\"pipeline\\\":\\\"t1\\\",\\\"skip\\\":true},\\\"raw\\\":{\\\"new\\\":{\\\"sk\\\":\\\"1668461460000\\\",\\\"pk\\\":\\\"us-west-2\\\",\\\"ttl\\\":1676410235,\\\"awsregion\\\":\\\"us-west-2\\\",\\\"discriminator\\\":\\\"trace\\\",\\\"status\\\":\\\"STARTED\\\",\\\"timestamp\\\":1668461435079}}}\"}]}
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 60576140-0977-45ab-a41c-9a91f1028c36
+content-type: application/x-amz-json-1.1
+content-length: 85
+date: Wed, 21 Dec 2022 19:25:02 GMT
+
+{"Entries":[{"EventId":"f682b492-4626-63ea-ba68-b1907e38ddf4"}],"FailedEntryCount":0}

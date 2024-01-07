@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.Query
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-regional-health-check-np-entities\",\"Limit\":3,\"ScanIndexForward\":false,\"KeyConditionExpression\":\"#pk = :pk\",\"ExpressionAttributeNames\":{\"#pk\":\"pk\"},\"ExpressionAttributeValues\":{\":pk\":{\"S\":\"us-west-2\"}},\"ConsistentRead\":true}
+
+HTTP/1.1 200 OK
+server: Server
+date: Sat, 12 Nov 2022 22:15:11 GMT
+content-type: application/x-amz-json-1.0
+content-length: 697
+connection: keep-alive
+x-amzn-requestid: 616FFD6T2SCM8AO0HVV2069ES7VV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 3163553838
+
+{"Count":3,"Items":[{"status":{"S":"COMPLETED"},"timestamp":{"N":"1668290744117"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1676239544"},"sk":{"S":"1668290580000"},"discriminator":{"S":"trace"},"pk":{"S":"us-west-2"}},{"status":{"S":"STARTED"},"timestamp":{"N":"1668290688223"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1676239488"},"sk":{"S":"1668290700000"},"discriminator":{"S":"trace"},"pk":{"S":"us-west-2"}},{"status":{"S":"STARTED"},"timestamp":{"N":"1668290568432"},"awsregion":{"S":"us-west-2"},"ttl":{"N":"1676239368"},"sk":{"S":"1668290580000"},"discriminator":{"S":"trace"},"pk":{"S":"us-west-2"}}],"LastEvaluatedKey":{"pk":{"S":"us-west-2"},"sk":{"S":"1668290580000"}},"ScannedCount":3}

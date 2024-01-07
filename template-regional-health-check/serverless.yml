@@ -1,0 +1,72 @@
+service: ${self:custom.subsys}-regional-health-check
+
+provider:
+  name: aws
+  deploymentBucket: ${file(serverless/cfn.yml):deploymentBucket}
+  iam:
+    deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs16.x
+  logRetentionInDays: ${param:logRetentionInDays}
+  environment: ${file(serverless/config.yml):environment}
+  endpointType: REGIONAL
+  apiGateway: ${file(serverless/apig.yml):apiGateway}
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+package:
+  individually: true
+
+plugins:
+  - serverless-aws-describe-plugin
+  - serverless-webpack
+  - baton-vcr-serverless-plugin
+  - serverless-offline
+
+functions:
+  rest:
+    handler: src/rest/index.handle
+    events:
+      - http:
+          path: '{proxy+}'
+          method: any
+          private: true
+    environment:
+      UNHEALTHY: false
+  trigger-db:
+    handler: src/trigger/dynamodb/index.handle
+    events:
+      - stream:
+          type: dynamodb
+          arn: ${self:custom.tableStreamArn}
+          batchSize: 10
+          startingPosition: TRIM_HORIZON
+          filterPatterns: ${file(serverless/dynamodb.yml):filterPatterns}
+  trigger-s3:
+    handler: src/trigger/s3/index.handle
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [ TriggerQueue, Arn ]
+  trigger-kinesis:
+    handler: src/trigger/kinesis/index.handle
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt: [ Stream1, Arn ]
+          batchSize: 10
+          startingPosition: TRIM_HORIZON
+          filterPatterns: ${file(serverless/kinesis.yml):filterPatterns}
+
+resources:
+  - ${file(serverless/cw.yml):resources}
+  - ${file(serverless/synthetics.yml):resources}
+  - ${file(serverless/dynamodb.yml):resources}
+  - ${file(serverless/s3.yml):resources}
+  - ${file(serverless/sns.yml):resources}
+  - ${file(serverless/sqs-trigger.yml):resources}
+  - ${file(serverless/bus.yml):resources}
+  - ${file(serverless/kinesis.yml):resources}
+  - ${file(serverless/conditions.yml)}

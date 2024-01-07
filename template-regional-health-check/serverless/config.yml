@@ -1,0 +1,55 @@
+params:
+  np:
+    debug: '*'
+    account: np # nonprod
+    logRetentionInDays: 3
+    shardCount: 1
+    apiKeys:
+      - name: ${self:service}-${opt:stage}-bar
+        value: 57913ada-45ac-49f2-b587-7f579f883758
+    us-east-1:
+      healthCheckEndpoint: ${cf(us-west-2):${self:custom.subsys}-regional-health-check-${opt:stage}.ServiceEndpoint, 'not-deployed'}/check
+    us-west-2:
+      healthCheckEndpoint: ${cf(us-east-1):${self:custom.subsys}-regional-health-check-${opt:stage}.ServiceEndpoint, 'not-deployed'}/check
+  prd:
+    debug: ''
+    account: prod
+    logRetentionInDays: 30
+    shardCount: 1
+    apiKeys:
+      # 2 pass rotation
+      # (1) uncomment (2) comment out the other and move to the top for next time
+      #  note canary env var assumes current is in position zero
+      # - name: ${self:service}-${opt:stage}-foo
+      #   value: gen-a-new-random-uuid
+      - name: ${self:service}-${opt:stage}-bar
+        value: 99749605-b27f-4feb-b306-d6437ff14c3d
+    us-east-1:
+      healthCheckEndpoint: ${cf(us-west-2):${self:custom.subsys}-regional-health-check-${opt:stage}.ServiceEndpoint, 'not-deployed'}/check
+    us-west-2:
+      healthCheckEndpoint: ${cf(us-east-1):${self:custom.subsys}-regional-health-check-${opt:stage}.ServiceEndpoint, 'not-deployed'}/check
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+  tableArn: ${file(serverless/dynamodb.yml):tableArn.${opt:region}}
+  tableStreamArn: ${file(serverless/dynamodb.yml):tableStreamArn.${opt:region}}
+  # replication: ${file(serverless/s3.yml):replication}
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  ENTITY_TABLE_NAME: ${self:service}-${opt:stage}-entities
+  BUCKET_NAME: ${self:custom.org}-${self:service}-${opt:stage}-${opt:region}
+  BUS_NAME: ${self:service}-${opt:stage}-bus
+  BUS_ARN: arn:aws:events:${opt:region}:${aws:accountId}:event-bus/${self:service}-${opt:stage}-bus
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MyMasterKeyArn, 'nofound'}
+  # KMS_REGIONS: us-east-1,us-west-2
+  

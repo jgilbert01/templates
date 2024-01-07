@@ -1,0 +1,16 @@
+PUT /us-west-2/1668461460000
+content-type: application/octet-stream
+host: my-template-regional-health-check-np-us-west-2.s3.us-west-2.amazonaws.com
+body: {\"id\":\"b31620aefda12855fab119eb78ddae5b\",\"type\":\"trace-created\",\"partitionKey\":\"us-west-2\",\"timestamp\":1668461435000,\"tags\":{\"region\":\"us-west-2\"},\"raw\":{\"new\":{\"sk\":\"1668461460000\",\"pk\":\"us-west-2\",\"ttl\":1676410235,\"awsregion\":\"us-west-2\",\"discriminator\":\"trace\",\"status\":\"STARTED\",\"timestamp\":1668461435079}}}
+
+HTTP/1.1 200 OK
+x-amz-id-2: fHbtGM24C+9uNuoPFAnQFEhP86XP8oRKQmCTegRcVMqbqBiZ4LYuLVLxXiir44SBpRNolOqD5H8=
+x-amz-request-id: PZ5HQBW5AHBBW1CD
+date: Sat, 17 Dec 2022 23:00:24 GMT
+x-amz-version-id: SOnlC9RX_NItKCv5mqh_ZqIAAimnPiU0
+x-amz-expiration: expiry-date="Mon, 20 Mar 2023 00:00:00 GMT", rule-id="YjI5MjNlNGMtMTgxNS00YTFiLWJjMjItYWMxNzI5NjhlNDlk"
+x-amz-server-side-encryption: AES256
+etag: "a9a40c6de81d60eb7887ededaa052a46"
+server: AmazonS3
+content-length: 0
+

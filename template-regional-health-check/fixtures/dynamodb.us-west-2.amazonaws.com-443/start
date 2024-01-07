@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.UpdateItem
+host: dynamodb.us-west-2.amazonaws.com
+body: {\"TableName\":\"template-regional-health-check-np-entities\",\"Key\":{\"pk\":{\"S\":\"us-west-2\"},\"sk\":{\"S\":\"1668290640000\"}},\"ExpressionAttributeNames\":{\"#timestamp\":\"timestamp\",\"#status\":\"status\",\"#discriminator\":\"discriminator\",\"#latched\":\"latched\",\"#ttl\":\"ttl\",\"#awsregion\":\"awsregion\"},\"ExpressionAttributeValues\":{\":timestamp\":{\"N\":\"1668290640000\"},\":status\":{\"S\":\"STARTED\"},\":discriminator\":{\"S\":\"trace\"},\":ttl\":{\"N\":\"1676239440\"},\":awsregion\":{\"S\":\"us-west-2\"}},\"UpdateExpression\":\"SET #timestamp = :timestamp, #status = :status, #discriminator = :discriminator, #ttl = :ttl, #awsregion = :awsregion REMOVE #latched\",\"ReturnValues\":\"ALL_NEW\"}
+
+HTTP/1.1 200 OK
+server: Server
+date: Sat, 12 Nov 2022 22:20:33 GMT
+content-type: application/x-amz-json-1.0
+content-length: 210
+connection: keep-alive
+x-amzn-requestid: TIFN223UHPHEGCQF4EI78O64QNVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 3712091688
+
+{"Attributes":{"status":{"S":"STARTED"},"timestamp":{"N":"1668290640000"},"awsregion":{"S":"us-west-2"},"sk":{"S":"1668290640000"},"ttl":{"N":"1676239440"},"discriminator":{"S":"trace"},"pk":{"S":"us-west-2"}}}

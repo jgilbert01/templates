@@ -1,0 +1,5 @@
+# GET https://tbd.execute-api.us-east-1.amazonaws.com/np/check
+# x-api-key: 00000000-0000-0000-0000-000000000000
+
+# GET https://tbd.execute-api.us-east-1.amazonaws.com/prd/check
+# x-api-key: 00000000-0000-0000-0000-000000000000

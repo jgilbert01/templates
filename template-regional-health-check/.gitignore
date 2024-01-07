@@ -1,0 +1,12 @@
+.DS_Store
+.eslintcache
+.npmrc
+.nyc_output
+.scannerwork
+.serverless
+.vscode
+.webpack
+*.log
+coverage
+node_modules
+bak

@@ -1,0 +1,66 @@
+filterPatterns:
+  - data:
+      type:
+          - prefix: 'trace-'
+
+resources:
+  Resources:
+    Stream1:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:service}-${opt:stage}-s1
+        RetentionPeriodHours: 24
+        ShardCount: ${param:shardCount}
+        StreamEncryption:
+          EncryptionType: KMS
+          KeyId: alias/aws/kinesis
+
+    # ----------
+    # POLICIES
+    # ----------
+
+    BusRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage}-${opt:region}-kinesis-role
+        # PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: events.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${opt:stage}-internal
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - kinesis:PutRecord
+                    - kinesis:PutRecords
+                  Resource:
+                    - Fn::GetAtt: [ Stream1, Arn ]
+
+    # ----------
+    # RULES
+    # ----------
+
+    Stream1EventRule:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName:
+          Ref: Bus
+        EventPattern:
+          detail:
+            type:
+              - anything-but: fault
+        State: ENABLED
+        Targets:
+          - Id: Stream1
+            Arn:
+              Fn::GetAtt: [ Stream1, Arn ]
+            RoleArn:
+              Fn::GetAtt: [ BusRole, Arn ]
+            KinesisParameters:
+              PartitionKeyPath: $.detail.partitionKey
+            InputPath: $.detail

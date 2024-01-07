@@ -1,0 +1,89 @@
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - events:PutEvents
+  Resource: ${self:provider.environment.BUS_ARN}
+
+resources:
+  Resources:
+    Bus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: ${self:provider.environment.BUS_NAME}
+
+    # ----------
+    # Logging
+    # ----------
+
+    LogGroupEvents: 
+      Type: AWS::Logs::LogGroup
+      Properties:
+        RetentionInDays: 30
+        LogGroupName: /aws/events/${self:service}-${opt:stage}-events
+        # KmsKeyId: 
+    LogGroupFaults: 
+      Type: AWS::Logs::LogGroup
+      Properties:
+        RetentionInDays: 30
+        LogGroupName: /aws/events/${self:service}-${opt:stage}-faults
+        # KmsKeyId: 
+
+    LogRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage}-${opt:region}-log-role
+        # PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: events.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${opt:stage}-log
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogStream
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/events/${self:service}-${opt:stage}-events:*'
+                    - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/events/${self:service}-${opt:stage}-faults:*'
+                - Effect: Allow
+                  Action:
+                    - logs:PutLogEvents
+                  Resource:
+                    - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/events/${self:service}-${opt:stage}-events:log-stream:*'
+                    - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/events/${self:service}-${opt:stage}-faults:log-stream:*'
+
+    LogRuleEvents:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName:
+          Ref: Bus
+        EventPattern:
+          detail:
+            type:
+              - anything-but: fault
+        State: ENABLED
+        RoleArn:
+          Fn::GetAtt: [ LogRole, Arn ]
+        Targets:
+          - Id: LogEvents
+            Arn: !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupEvents}'
+
+    LogRuleFaults:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName:
+          Ref: Bus
+        EventPattern:
+          detail:
+            type: 
+              - fault
+        State: ENABLED
+        RoleArn:
+          Fn::GetAtt: [ LogRole, Arn ]
+        Targets:
+          - Id: LogFaults
+            Arn: !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupFaults}'
