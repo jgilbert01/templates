@@ -80,7 +80,7 @@ resources:
     #   Type: AWS::IAM::Role
     #   Properties:
     #     RoleName: ${self:custom.replication.roleName}
-    #     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-ServerlessRuntimeBoundary-${opt:stage}'
+    #     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
     #     AssumeRolePolicyDocument:
     #       Statement:
     #         - Effect: Allow

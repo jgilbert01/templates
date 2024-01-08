@@ -1,8 +1,8 @@
 Conditions:
   IsWest:
-      Fn::Equals:
-        - ${opt:region}
-        - us-west-2
+    Fn::Equals:
+      - ${opt:region}
+      - us-west-2
   IsEast:
     Fn::Equals:
       - ${opt:region}

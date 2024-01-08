@@ -1,7 +1,7 @@
 deploymentBucket: 
   name: ${self:custom.org}-${self:custom.subsys}-sls-deploy-${opt:stage}-${opt:region}
 
-deploymentRole: arn:${self:custom.partition}:iam::${aws:accountId}:role/${self:custom.subsys}-cfnExecRole-${opt:stage}
+deploymentRole: arn:${self:custom.partition}:iam::${aws:accountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}
 
 cfn:
   esm: 

@@ -1,10 +1,20 @@
 params:
-  stg:
+  np:
     debug: '*'
-    account: dev # nonprod
+    account: np # nonprod
+    logRetentionInDays: 3
   prd:
     debug: ''
     account: prod
+    logRetentionInDays: 30
+ 
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+  # replication: ${file(serverless/s3.yml):replication}
 
 environment:
   ACCOUNT_NAME: ${param:account}

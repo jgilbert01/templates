@@ -6,7 +6,7 @@ export const getClaims = (requestContext) => ({
   userGroups: getUserGroups(requestContext),
 });
 
-export const getUsername = (requestContext) => get(requestContext, 'authorizer.claims.cognito:username', requestContext.authorizer?.principalId || '');
+export const getUsername = (requestContext) => get(requestContext, 'authorizer.claims.sub', requestContext.authorizer?.principalId || '');
 
 export const getUserGroups = (requestContext) => {
   const groups = get(requestContext, 'authorizer.claims.cognito:groups', []);

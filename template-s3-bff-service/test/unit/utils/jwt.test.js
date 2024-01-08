@@ -20,13 +20,13 @@ describe('utils/index.js', () => {
     expect(getClaims({
       authorizer: {
         claims: {
-          'cognito:username': 'offlineContext_authorizer_principalId',
+          sub: 'offlineContext_authorizer_principalId',
         },
       },
     })).to.deep.equal({
-      'cognito:username': 'offlineContext_authorizer_principalId',
-      'userGroups': [],
-      'username': 'offlineContext_authorizer_principalId',
+      sub: 'offlineContext_authorizer_principalId',
+      userGroups: [],
+      username: 'offlineContext_authorizer_principalId',
     });
 
     expect(getClaims({ authorizer: {} })).to.deep.equal({
@@ -43,7 +43,7 @@ describe('utils/index.js', () => {
     expect(getUsername({
       authorizer: {
         claims: {
-          'cognito:username': 'offlineContext_authorizer_principalId',
+          sub: 'offlineContext_authorizer_principalId',
         },
       },
     })).to.equal('offlineContext_authorizer_principalId');

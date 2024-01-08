@@ -9,7 +9,7 @@ cors:
 
 authorizer:
   arn: ${self:provider.environment.USER_POOL}
-#   arn: ${cf:${self:custom.subsys}-authorization-service-${opt:stage}.AuthorizerArn}
+#   arn: ${cf:${self:custom.subsys}-idm-service-${opt:stage}.AuthorizerArn}
 
 resources:
   Resources:
@@ -54,13 +54,3 @@ resources:
     #     RestApiId:
     #       Ref: ApiGatewayRestApi
     #     Stage: ${opt:stage}
-
-  # PRIVATE endpoint only
-  Outputs:
-    ServiceEndpoint: # merges with default
-      Value:
-        Fn::Join:
-          - ''
-          - - 'https://'
-            - Ref: ApiGatewayRestApi
-            - -${cf:${self:custom.subsys}-global-resources-${opt:stage}.ApiGatewayEndpointId}.execute-api.
