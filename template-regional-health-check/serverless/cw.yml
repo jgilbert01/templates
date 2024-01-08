@@ -79,7 +79,6 @@ resources:
       DependsOn:
         - Apig5xxAlarm
         - DynamoDB5xxAlarm
-
     RegionalHealthCheck:
       Type: AWS::Route53::HealthCheck
       Properties:
@@ -93,38 +92,8 @@ resources:
         - ApigHealthCheck
         - DynamoDBHealthCheck
 
-    # -----------------------
-    # these are here for backwards compatibility
-    # and will be removed in a follow on task
-    # -----------------------
-    Api5xxAlarm:
-      Type: AWS::CloudWatch::Alarm
-      Properties:
-        Namespace: AWS/ApiGateway
-        MetricName: 5XXError
-        Dimensions:
-          - Name: ApiName
-            Value: ${opt:stage}-template-roles-permissions-service
-        Statistic: Minimum
-        ComparisonOperator: GreaterThanThreshold
-        Threshold: 0
-        Period: 60
-        EvaluationPeriods: 1
-    ApiHealthCheck:
-      DependsOn: Api5xxAlarm
-      Type: AWS::Route53::HealthCheck
-      Properties:
-        HealthCheckConfig:
-          Type: CLOUDWATCH_METRIC
-          AlarmIdentifier:
-            Name: !Ref Api5xxAlarm
-            Region: ${opt:region}
-          InsufficientDataHealthStatus: LastKnownStatus
-
   Outputs:
     HealthAlarm:
       Value: !Ref RegionalHealthAlarm
     HealthCheckId:
-      Value: !Ref ApiHealthCheck # RegionalHealthCheck
-    HealthCheckIdV2:
       Value: !Ref RegionalHealthCheck
