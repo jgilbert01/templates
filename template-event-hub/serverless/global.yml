@@ -15,7 +15,7 @@ resources:
             Primary:
               HealthCheck: !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${self:custom.healthCheckId}'
             Secondary:
-              Route: ${self:custom.secondary.${opt:region}}
+              Route: ${self:custom.global.secondary.${opt:region}}
         ReplicationConfig:
           State: DISABLED
         # RoleArn: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:role/${self:custom.subsys}-EndpointReplicationRole-${opt:stage}'

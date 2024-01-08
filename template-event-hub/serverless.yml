@@ -8,12 +8,7 @@ provider:
   stackTags: ${file(serverless/tags.yml)}
 
 params: ${file(serverless/config.yml):params}
-
-custom:
-  partition: aws
-  org: my
-  subsys: template
-  # global: ${file(serverless/global.yml):global}
+custom: ${file(serverless/config.yml):custom}
 
 resources:
   - ${file(serverless/bus.yml):resources}

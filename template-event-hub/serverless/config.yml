@@ -5,3 +5,9 @@ params:
   prd:
     shardCount: 1
     # ingressShardCount: 1
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  # global: ${file(serverless/global.yml):global}
