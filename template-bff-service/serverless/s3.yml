@@ -27,6 +27,7 @@ resources:
       # DependsOn: [ Topic, TopicPolicy ]
       Properties:
         BucketName: ${self:custom.org}-${self:service}-${opt:stage}-${opt:region}
+        AccessControl: Private
         BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
@@ -60,8 +61,8 @@ resources:
         #       Filter:
         #         S3Key:
         #           Rules:
-        #             - Name: suffix
-        #               Value: mfe.json
+        #             - Name: prefix
+        #               Value: ${opt:region}
         #       Topic:
         #         Ref: Topic
 
@@ -70,7 +71,7 @@ resources:
     #   Type: AWS::IAM::Role
     #   Properties:
     #     RoleName: ${self:custom.replication.roleName}
-    #     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-ServerlessRuntimeBoundary-${opt:stage}'
+    #     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}'
     #     AssumeRolePolicyDocument:
     #       Statement:
     #         - Effect: Allow

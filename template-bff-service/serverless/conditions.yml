@@ -3,7 +3,7 @@ Conditions:
     Fn::Equals:
       - ${opt:region}
       - us-west-2
-  # IsEast:
-  #   Fn::Equals:
-  #     - ${opt:region}
-  #     - us-east-1
+  IsEast:
+    Fn::Equals:
+      - ${opt:region}
+      - us-east-1

@@ -1,10 +1,24 @@
 params:
-  stg:
+  np:
     debug: '*'
-    account: dev # nonprod
+    account: np # nonprod
+    logRetentionInDays: 3
   prd:
     debug: ''
     account: prod
+    logRetentionInDays: 30
+ 
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  webpack:
+    includeModules: true
+  tableArn: ${file(serverless/dynamodb.yml):tableArn.${opt:region}}
+  tableStreamArn: ${file(serverless/dynamodb.yml):tableStreamArn.${opt:region}}
+  # replication: ${file(serverless/s3.yml):replication}
+  # secrets: ${file(serverless/secrets.yml):secrets}
+  # cfn: ${file(serverless/cfn.yml):cfn}
 
 environment:
   ACCOUNT_NAME: ${param:account}
@@ -17,7 +31,7 @@ environment:
   USER_POOL: ${cf(us-west-2):${self:custom.subsys}-cognito-resources-${opt:stage}.userPoolArn}
   BUS_NAME: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busName}
   BUS_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busArn}
-  # STREAM_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.stream1Arn}
+  STREAM_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.stream1Arn}
   # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
   # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
   # KMS_REGIONS: us-east-1,us-west-2

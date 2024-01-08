@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import debug from 'debug';
 import AWS from 'aws-sdk-mock';
 
-import Connector, { updateExpression } from '../../../src/connectors/dynamodb';
+import Connector from '../../../src/connectors/dynamodb';
 
 describe('connectors/dynamodb.js', () => {
   afterEach(() => {
@@ -274,39 +274,6 @@ describe('connectors/dynamodb.js', () => {
         name: 'thing2',
         timestamp: 1600051691001,
       }],
-    });
-  });
-
-  it('should calculate updateExpression', () => {
-    expect(updateExpression({
-      name: 'Thing One',
-      description: 'This is thing one.',
-      status: undefined,
-      status2: null,
-      discriminator: 'thing',
-      latched: true,
-      ttl: 1543046400,
-      timestamp: 1540454400000,
-    })).to.deep.equal({
-      ExpressionAttributeNames: {
-        '#description': 'description',
-        '#discriminator': 'discriminator',
-        '#latched': 'latched',
-        '#name': 'name',
-        '#status2': 'status2',
-        '#timestamp': 'timestamp',
-        '#ttl': 'ttl',
-      },
-      ExpressionAttributeValues: {
-        ':description': 'This is thing one.',
-        ':discriminator': 'thing',
-        ':latched': true,
-        ':name': 'Thing One',
-        ':timestamp': 1540454400000,
-        ':ttl': 1543046400,
-      },
-      UpdateExpression: 'SET #name = :name, #description = :description, #discriminator = :discriminator, #latched = :latched, #ttl = :ttl, #timestamp = :timestamp REMOVE #status2',
-      ReturnValues: 'ALL_NEW',
     });
   });
 });

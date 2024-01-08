@@ -15,7 +15,7 @@ resources:
               Principal:
                 Service: s3.amazonaws.com
               Action:
-                - SNS:Publish
+                - sns:Publish
               Resource:
                 Ref: Topic
               Condition:

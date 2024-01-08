@@ -1,45 +1,10 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 import { config, DynamoDB } from 'aws-sdk';
 import Promise from 'bluebird';
-import merge from 'lodash/merge';
 import _ from 'highland';
+import { updateExpression } from 'aws-lambda-stream';
 
 config.setPromisesDependency(Promise);
-
-export const updateExpression = (Item) => {
-  const keys = Object.keys(Item);
-
-  const ExpressionAttributeNames = keys
-    .filter((attrName) => Item[attrName] !== undefined)
-    .map((attrName) => ({ [`#${attrName}`]: attrName }))
-    .reduce(merge, {});
-
-  const ExpressionAttributeValues = keys
-    .filter((attrName) => Item[attrName] !== undefined && Item[attrName] !== null)
-    .map((attrName) => ({ [`:${attrName}`]: Item[attrName] }))
-    .reduce(merge, {});
-
-  let UpdateExpression = `SET ${keys
-    .filter((attrName) => Item[attrName] !== undefined && Item[attrName] !== null)
-    .map((attrName) => `#${attrName} = :${attrName}`)
-    .join(', ')}`;
-
-  const UpdateExpressionRemove = keys
-    .filter((attrName) => Item[attrName] === null)
-    .map((attrName) => `#${attrName}`)
-    .join(', ');
-
-  if (UpdateExpressionRemove.length) {
-    UpdateExpression = `${UpdateExpression} REMOVE ${UpdateExpressionRemove}`;
-  }
-
-  return {
-    ExpressionAttributeNames,
-    ExpressionAttributeValues,
-    UpdateExpression,
-    ReturnValues: 'ALL_NEW',
-  };
-};
 
 class Connector {
   constructor(

@@ -8,26 +8,15 @@ provider:
     role: ${file(serverless/iam.yml):role}
   stackTags: ${file(serverless/tags.yml)}
   runtime: nodejs16.x
-  logRetentionInDays: 30
+  logRetentionInDays: ${param:logRetentionInDays}
   environment: ${file(serverless/config.yml):environment}
   endpointType: REGIONAL
   # apiGateway: ${file(serverless/apig.yml):apiGateway}
 
 params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
 package:
   individually: true
-custom:
-  partition: aws
-  org: my
-  subsys: template
-  webpack:
-    includeModules: true
-  tableArn: ${file(serverless/dynamodb.yml):tableArn.${opt:region}}
-  tableStreamArn: ${file(serverless/dynamodb.yml):tableStreamArn.${opt:region}}
-  # replication: ${file(serverless/s3.yml):replication}
-  # secrets: ${file(serverless/secrets.yml):secrets}
-  # cfn: ${file(serverless/cfn.yml):cfn}
-  # cron: ${file(serverless/cron.yml):cron}
 
 plugins:
   - serverless-aws-describe-plugin
@@ -74,11 +63,6 @@ functions:
       # - sqs:
       #     arn:
       #       Fn::GetAtt: [ TriggerQueue, Arn ]
-  # job:
-  #   handler: src/job/index.handle
-  #   events:
-  #     - schedule:
-  #         rate: ${self:custom.cron.${opt:region}}
 
 resources:
   - ${file(serverless/apig.yml):resources}
