@@ -21,4 +21,4 @@ jobs:
           role-to-assume: ${{ secrets.DEV_AWS_ROLE }}
       - run: npm test
       - run: npm run test:int:ci
-      - run: npm run dp:stg:w:ci
+      - run: npm run dp:np:w:ci

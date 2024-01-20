@@ -14,17 +14,17 @@ ci:
     - npm test
     - npm run test:int:ci
 
-cd-stg-west:
+cd-np-west:
   stage: deploy
   script:
-    - npm run dp:stg:w:ci
+    - npm run dp:np:w:ci
   only:
     - merge_requests
 
-cd-stg-east:
+cd-np-east:
   stage: deploy
   script:
-    - npm run dp:stg:e:ci
+    - npm run dp:np:e:ci
   only:
     - merge_requests
   except:
