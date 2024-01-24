@@ -1,0 +1,24 @@
+{
+	"id": 82114,
+	"name": "fault.event",
+	"type": "event-v2 alert",
+	"query": "events(\"status:error source:my event_type:fault\").rollup(\"count\").by(\"service,env\").last(\"5m\") > 0",
+	"message": "{{#is_alert}} @me@my.com {{/is_alert}}",
+	"tags": [],
+	"options": {
+		"notify_audit": false,
+		"locked": false,
+		"silenced": {},
+		"enable_logs_sample": true,
+		"thresholds": {
+			"critical": 0
+		},
+		"notify_no_data": false,
+		"include_tags": true,
+		"groupby_simple_monitor": false,
+		"escalation_message": "",
+		"restriction_query": null,
+		"new_group_delay": 60
+	},
+	"priority": null
+}

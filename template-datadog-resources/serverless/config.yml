@@ -1,0 +1,10 @@
+params:
+  np:
+    account: np # nonprod
+  prd:
+    account: prod
+ 
+custom:
+  partition: aws
+  org: my
+  subsys: template

@@ -1,0 +1,1070 @@
+{
+    "title": "Overview (Work/RED) Dashboard",
+    "description": "## Title\n\nDescribe this dashboard. Add links to other dashboards, monitors, wikis,  and docs to help your teammates. Markdown is supported.\n\n- [This might link to a dashboard](#)\n- [This might link to a wiki](#)",
+    "widgets": [
+        {
+            "id": 12505898550876,
+            "definition": {
+                "title": "Domain Event Rate",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:template.domain.event.count.sum{$account,$region}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 345994131537008,
+            "definition": {
+                "title": "Listener Rate",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.lambda.invocations{functionname:*-listener,$account,$region,$env,$service}.as_rate()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 2,
+                "y": 0,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 5307959767986498,
+            "definition": {
+                "title": "REST Rate",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.apigateway.count{$account,$region,$env,$service}.as_rate()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 4,
+                "y": 0,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 5496495257856710,
+            "definition": {
+                "title": "Trigger Rate",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.lambda.invocations{functionname:*-trigger,$account,$region,$env,$service}.as_rate()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 6,
+                "y": 0,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 5919957891274128,
+            "definition": {
+                "title": "View Count",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "search": {
+                                    "query": "$applicationId"
+                                },
+                                "data_source": "rum",
+                                "compute": {
+                                    "metric": "@view.url_path_group",
+                                    "aggregation": "cardinality"
+                                },
+                                "name": "query1",
+                                "indexes": [
+                                    "*"
+                                ],
+                                "group_by": []
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 8,
+                "y": 0,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 8130768997753588,
+            "definition": {
+                "title": "Faults",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_red",
+                                "value": 1
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:template.domain.event.count{type:fault,$account,$region}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 0,
+                "y": 2,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 1024264492304000,
+            "definition": {
+                "title": "Listener Errors",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_red",
+                                "value": 3
+                            },
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 1
+                            },
+                            {
+                                "comparator": "<=",
+                                "palette": "white_on_green",
+                                "value": 0
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.lambda.errors{functionname:*-listener,$account,$region,$env,$service}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 2,
+                "y": 2,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 2157077673071768,
+            "definition": {
+                "title": "5xx",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_red",
+                                "value": 1
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.apigateway.5xxerror{$account,$region,$env,$service}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 4,
+                "y": 2,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 2548521574538630,
+            "definition": {
+                "title": "Trigger Errors",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 1
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.lambda.errors{functionname:*-trigger,$account,$region,$env,$service}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 6,
+                "y": 2,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 1692805826980700,
+            "definition": {
+                "title": "View Errors",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_red",
+                                "value": 1
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "search": {
+                                    "query": "$applicationId"
+                                },
+                                "data_source": "rum",
+                                "compute": {
+                                    "metric": "@view.error.count",
+                                    "aggregation": "sum"
+                                },
+                                "name": "query1",
+                                "indexes": [
+                                    "*"
+                                ],
+                                "group_by": []
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 8,
+                "y": 2,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 689908444478954,
+            "definition": {
+                "title": "Iterator Age",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 8000
+                            },
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 4000
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 4000
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "avg:aws.lambda.iterator_age{$account,$region,$env,$service}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 0,
+                "y": 4,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 5465312186121510,
+            "definition": {
+                "title": "Listener Duration",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 6000
+                            },
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 4000
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 4000
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "avg:aws.lambda.duration.p95{functionname:*-listener,$account,$region,$env,$service}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 2,
+                "y": 4,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 6009773587477994,
+            "definition": {
+                "title": "REST Duration",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 3000
+                            },
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 1000
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1000
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "avg:aws.apigateway.latency.p95{$account,$region,$env,$service}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 4,
+                "y": 4,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 778182813366664,
+            "definition": {
+                "title": "Trigger Duration",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 4000
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 4000
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "avg:aws.lambda.duration.p80{functionname:*-trigger,$account,$region,$env,$service}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 6,
+                "y": 4,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 7013251620135736,
+            "definition": {
+                "title": "View Load",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 3000000000
+                            },
+                            {
+                                "comparator": ">=",
+                                "palette": "white_on_yellow",
+                                "value": 1000000000
+                            },
+                            {
+                                "comparator": "<",
+                                "palette": "white_on_green",
+                                "value": 1000000000
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "search": {
+                                    "query": "$applicationId"
+                                },
+                                "data_source": "rum",
+                                "compute": {
+                                    "metric": "@view.loading_time",
+                                    "aggregation": "avg"
+                                },
+                                "name": "query1",
+                                "indexes": [
+                                    "*"
+                                ],
+                                "group_by": []
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 8,
+                "y": 4,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 7659347142418446,
+            "definition": {
+                "type": "manage_status",
+                "summary_type": "monitors",
+                "display_format": "countsAndList",
+                "color_preference": "text",
+                "hide_zero_counts": true,
+                "show_last_triggered": false,
+                "show_priority": false,
+                "query": "",
+                "sort": "status,asc",
+                "count": 50,
+                "start": 0
+            },
+            "layout": {
+                "x": 0,
+                "y": 6,
+                "width": 4,
+                "height": 6
+            }
+        },
+        {
+            "id": 599728410038518,
+            "definition": {
+                "title": "Domain Event Counts",
+                "title_size": "16",
+                "title_align": "left",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:template.domain.event.count.sum{$account,$region} by {type}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "type": "sunburst"
+            },
+            "layout": {
+                "x": 4,
+                "y": 6,
+                "width": 6,
+                "height": 4
+            }
+        },
+        {
+            "id": 5613695549651798,
+            "definition": {
+                "title": "AWS Check Status",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "check_status",
+                "check": "aws.status",
+                "grouping": "cluster",
+                "group_by": [],
+                "tags": []
+            },
+            "layout": {
+                "x": 4,
+                "y": 10,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 6576853483615806,
+            "definition": {
+                "title": "Count by Service",
+                "title_size": "16",
+                "title_align": "left",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1",
+                                "limit": {
+                                    "order": "desc"
+                                }
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.apigateway.count{$account,$region,$env,$service} by {name}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ],
+                "type": "sunburst",
+                "legend": {
+                    "type": "automatic"
+                }
+            },
+            "layout": {
+                "x": 6,
+                "y": 10,
+                "width": 4,
+                "height": 4
+            }
+        },
+        {
+            "id": 1559476181132790,
+            "definition": {
+                "title": "Faults",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "toplist",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1",
+                                "limit": {
+                                    "count": 10,
+                                    "order": "desc"
+                                }
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:template.domain.event.count{$account,$region,type:fault} by {functionname,pipeline}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 12,
+                "width": 6,
+                "height": 2
+            }
+        },
+        {
+            "id": 8242004962304156,
+            "definition": {
+                "title": "5XX",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "toplist",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1",
+                                "limit": {
+                                    "count": 10,
+                                    "order": "desc"
+                                }
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.apigateway.5xxerror{$account,$region,$env} by {apiname}.as_count()",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "sum"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 14,
+                "width": 6,
+                "height": 2
+            }
+        },
+        {
+            "id": 6165107007402286,
+            "definition": {
+                "title": "DMS CDC Latency (max)",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_value",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "conditional_formats": [
+                            {
+                                "comparator": "<=",
+                                "palette": "white_on_green",
+                                "value": 60
+                            },
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_yellow",
+                                "value": 60
+                            },
+                            {
+                                "comparator": ">",
+                                "palette": "white_on_red",
+                                "value": 500
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "max:aws.dms.cdclatency_source{$account,$region,$env}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "max"
+                            }
+                        ]
+                    }
+                ],
+                "autoscale": true,
+                "precision": 2
+            },
+            "layout": {
+                "x": 6,
+                "y": 14,
+                "width": 2,
+                "height": 2
+            }
+        },
+        {
+            "id": 1458226206157468,
+            "definition": {
+                "title": "Iterator Age",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {},
+                "type": "toplist",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "formula": "query1",
+                                "limit": {
+                                    "count": 10,
+                                    "order": "desc"
+                                }
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "query": "sum:aws.lambda.iterator_age{$account,$region} by {functionname}",
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "aggregator": "avg"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 16,
+                "width": 4,
+                "height": 2
+            }
+        }
+    ],
+    "template_variables": [
+        {
+            "name": "account",
+            "default": "prod",
+            "prefix": "account",
+            "available_values": []
+        },
+        {
+            "name": "region",
+            "default": "us-east-1",
+            "prefix": "region",
+            "available_values": []
+        },
+        {
+            "name": "env",
+            "default": "*",
+            "prefix": "environment",
+            "available_values": []
+        },
+        {
+            "name": "service",
+            "default": "*",
+            "prefix": "name",
+            "available_values": []
+        },
+        {
+            "name": "applicationId",
+            "default": "44c2ddc6-0000-486a-0000-98dc6ea6571e",
+            "prefix": "@application.id",
+            "available_values": []
+        }
+    ],
+    "layout_type": "ordered",
+    "is_read_only": false,
+    "notify_list": [],
+    "template_variable_presets": [
+        {
+            "name": "Dev",
+            "template_variables": [
+                {
+                    "name": "account",
+                    "value": "dev"
+                },
+                {
+                    "name": "region",
+                    "value": "us-east-1"
+                },
+                {
+                    "name": "applicationId",
+                    "value": "fbfb90f4-0000-4f08-0000-415c1b1a44cb"
+                }
+            ]
+        },
+        {
+            "name": "Fqt",
+            "template_variables": [
+                {
+                    "name": "account",
+                    "value": "dev"
+                },
+                {
+                    "name": "region",
+                    "value": "us-west-2"
+                },
+                {
+                    "name": "applicationId",
+                    "value": "c88deaa0-458e-0000-0000-081412c6f2b0"
+                }
+            ]
+        },
+        {
+            "name": "Prod",
+            "template_variables": [
+                {
+                    "name": "account",
+                    "value": "prod"
+                },
+                {
+                    "name": "region",
+                    "value": "us-east-1"
+                },
+                {
+                    "name": "applicationId",
+                    "value": "44c2ddc6-c26b-486a-0000-98dc6ea6571e"
+                }
+            ]
+        }
+    ],
+    "reflow_type": "fixed",
+    "id": "9dd-dff-pay"
+}

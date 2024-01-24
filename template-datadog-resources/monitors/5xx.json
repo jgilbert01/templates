@@ -1,0 +1,29 @@
+{
+	"id": 81804,
+	"name": "aws.apigateway.5xxerror",
+	"type": "metric alert",
+	"query": "sum(last_1h):avg:aws.apigateway.5xxerror{*} by {account,region,stage,apiname}.as_count() > 0",
+	"message": "{{#is_alert}} @me@my.com {{/is_alert}}",
+	"tags": [],
+	"options": {
+		"notify_audit": false,
+		"locked": false,
+		"timeout_h": 0,
+		"silenced": {
+			"*": null
+		},
+		"include_tags": true,
+		"no_data_timeframe": null,
+		"require_full_window": false,
+		"notify_no_data": false,
+		"renotify_interval": 0,
+		"new_group_delay": 60,
+		"renotify_occurrences": null,
+		"renotify_statuses": null,
+		"thresholds": {
+			"critical": 0
+		},
+		"escalation_message": ""
+	},
+	"priority": null
+}

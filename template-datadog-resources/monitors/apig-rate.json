@@ -1,0 +1,34 @@
+{
+	"id": 78303,
+	"name": "aws.apigateway.rate",
+	"type": "query alert",
+	"query": "avg(last_1d):anomalies(sum:aws.apigateway.count{account:prod} by {account,region,apiname}.as_rate(), 'agile', 2, direction='below', alert_window='last_1h', interval=300, count_default_zero='true', seasonality='hourly') >= 1",
+	"message": "{{#is_alert}} @me@my.com {{/is_alert}}",
+	"tags": [],
+	"options": {
+		"notify_audit": false,
+		"locked": false,
+		"timeout_h": 0,
+		"silenced": {
+			"*": null
+		},
+		"include_tags": true,
+		"no_data_timeframe": null,
+		"require_full_window": false,
+		"notify_no_data": false,
+		"renotify_interval": 0,
+		"new_group_delay": 60,
+		"renotify_occurrences": null,
+		"renotify_statuses": null,
+		"threshold_windows": {
+			"recovery_window": "last_15m",
+			"trigger_window": "last_1h"
+		},
+		"thresholds": {
+			"critical": 1,
+			"critical_recovery": 0
+		},
+		"escalation_message": ""
+	},
+	"priority": null
+}

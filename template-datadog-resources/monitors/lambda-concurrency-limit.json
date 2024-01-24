@@ -1,0 +1,28 @@
+{
+	"id": 82092,
+	"name": "aws.lambda.concurrent_executions",
+	"type": "metric alert",
+	"query": "avg(last_5m):max:aws.lambda.concurrent_executions_global.maximum{*} by {account,region} > 800",
+	"message": "@me@my.com",
+	"tags": [],
+	"options": {
+		"notify_audit": false,
+		"locked": false,
+		"timeout_h": 0,
+		"silenced": {},
+		"include_tags": true,
+		"no_data_timeframe": null,
+		"require_full_window": false,
+		"notify_no_data": false,
+		"renotify_interval": 0,
+		"new_group_delay": 60,
+		"renotify_occurrences": null,
+		"renotify_statuses": null,
+		"thresholds": {
+			"critical": 800,
+			"warning": 600
+		},
+		"escalation_message": ""
+	},
+	"priority": null
+}

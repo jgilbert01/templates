@@ -1,0 +1,8 @@
+resources:
+  Resources:
+    CriticalAlarmSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: https
+        Endpoint: https://app.ddog.com/intake/webhook/sns?api_key=
+        TopicArn: ${cf:template-pipeline-resources-${opt:stage}.CriticalAlarmTopicArn}
