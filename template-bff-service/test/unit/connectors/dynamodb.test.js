@@ -2,18 +2,27 @@ import 'mocha';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import debug from 'debug';
-import AWS from 'aws-sdk-mock';
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+  UpdateCommand,
+} from '@aws-sdk/lib-dynamodb';
+import { mockClient } from 'aws-sdk-client-mock';
 
 import Connector from '../../../src/connectors/dynamodb';
 
 describe('connectors/dynamodb.js', () => {
+  let mockDdb;
+  beforeEach(() => {
+    mockDdb = mockClient(DynamoDBDocumentClient);
+  });
   afterEach(() => {
-    AWS.restore('DynamoDB.DocumentClient');
+    mockDdb.restore();
   });
 
   it('should update', async () => {
-    const spy = sinon.spy((params, cb) => cb(null, {}));
-    AWS.mock('DynamoDB.DocumentClient', 'update', spy);
+    const spy = sinon.spy((_) => ({}));
+    mockDdb.on(UpdateCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .update({
@@ -49,7 +58,7 @@ describe('connectors/dynamodb.js', () => {
       }],
     }));
 
-    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+    mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .get('00000000-0000-0000-0000-000000000000');
@@ -82,7 +91,7 @@ describe('connectors/dynamodb.js', () => {
       }],
     }));
 
-    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+    mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .query({
@@ -126,7 +135,7 @@ describe('connectors/dynamodb.js', () => {
       }],
     }));
 
-    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+    mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .query({
@@ -174,7 +183,7 @@ describe('connectors/dynamodb.js', () => {
       }],
     }));
 
-    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+    mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .query({
@@ -230,8 +239,7 @@ describe('connectors/dynamodb.js', () => {
     ];
 
     const spy = sinon.spy((params, cb) => cb(null, responses.shift()));
-
-    AWS.mock('DynamoDB.DocumentClient', 'query', spy);
+    mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
       .queryAll({

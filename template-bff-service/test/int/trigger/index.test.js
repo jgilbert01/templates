@@ -1,16 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
 
-import { handle } from '../../../src/trigger';
+import lambdaTest from 'aws-lambda-stream/utils/lambda-test';
+
+const invoke = lambdaTest({ functionName: `${process.env.npm_package_name}-dev-trigger` });
 
 describe('trigger/index.js', () => {
-  before(() => {
-    require('baton-vcr-replay-for-aws-sdk'); // eslint-disable-line global-require
-  });
-
   it('should test trigger integration', async () => {
-    const res = await handle(EVENT, {});
-    expect(res).to.equal('Success');
+    const res = await invoke(EVENT);
+    expect(res.Payload).toEqual('Success');
   });
 });
 

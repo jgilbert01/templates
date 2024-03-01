@@ -1,6 +1,7 @@
 const slsw = require('serverless-webpack');
-const nodeExternals = require("webpack-node-externals");
+const nodeExternals = require('webpack-node-externals');
 const path = require('path');
+const { EnvironmentPlugin } = require('webpack');
 
 const injectMocks = (entries) =>
   Object.keys(entries).reduce((e, key) => {
@@ -23,10 +24,11 @@ module.exports = {
     minimize: false
   },
   target: 'node',
-  mode: slsw.lib.webpack.isLocal ? "development" : "production",
+  mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   externals: [
     nodeExternals()
   ],
+  plugins: includeMocks() ? [new EnvironmentPlugin({ REPLAY: process.env.REPLAY })] : undefined,
   module: {
     rules: [
       {
