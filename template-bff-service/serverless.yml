@@ -23,7 +23,6 @@ plugins:
   # - serverless-kinesis-esm-plugin
   # - serverless-secrets-mgr-plugin
   - serverless-webpack
-  - baton-vcr-serverless-plugin
   - serverless-offline
 
 functions:

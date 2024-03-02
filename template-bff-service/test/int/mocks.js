@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import * as sinon from 'sinon';
-import * as utils from '../../src/utils';
 import Replay from 'replay';
+import * as utils from '../../src/utils';
 
 // ==========================
 // Mock dates, uuids, etc
@@ -19,4 +19,5 @@ Replay.headers = [/^x-amz-target/].concat(Replay.headers.filter((header) => !hea
 
 // monkey patch replay to avoid immediate max retries and ultimately timeout
 const rproxy = require('replay/lib/proxy');
+
 rproxy.prototype.setTimeout = () => { };
