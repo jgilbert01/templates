@@ -28,7 +28,7 @@ module.exports = {
   externals: [
     nodeExternals()
   ],
-  plugins: includeMocks() ? [new EnvironmentPlugin({ REPLAY: process.env.REPLAY })] : undefined,
+  plugins: includeMocks() ? [new EnvironmentPlugin({ REPLAY: process.env.REPLAY || 'replay' })] : undefined,
   module: {
     rules: [
       {
