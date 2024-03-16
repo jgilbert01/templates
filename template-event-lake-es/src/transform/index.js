@@ -84,7 +84,7 @@ const stringifyEvent = tryCatch((uow) => {
 const base64Data = tryCatch((uow) => ({
   ...uow,
   // decompressed
-  data: Buffer.from(JSON.stringify(uow.data), 'utf-8').toString('base64'),
+  data: Buffer.from(uow.data, 'utf-8').toString('base64'),
 }));
 
 // https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html
