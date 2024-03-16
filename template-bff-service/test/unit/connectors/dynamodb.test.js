@@ -49,7 +49,7 @@ describe('connectors/dynamodb.js', () => {
   });
 
   it('should get by id', async () => {
-    const spy = sinon.spy((params, cb) => cb(null, {
+    const spy = sinon.spy((params) => ({
       Items: [{
         pk: '00000000-0000-0000-0000-000000000000',
         sk: 'thing',
@@ -81,7 +81,7 @@ describe('connectors/dynamodb.js', () => {
   });
 
   it('should query - page 1', async () => {
-    const spy = sinon.spy((params, cb) => cb(null, {
+    const spy = sinon.spy((params) => ({
       LastEvaluatedKey: { pk: '1', sk: 'thing' },
       Items: [{
         pk: '1',
@@ -125,7 +125,7 @@ describe('connectors/dynamodb.js', () => {
   });
 
   it('should query - page 1 - below limit', async () => {
-    const spy = sinon.spy((params, cb) => cb(null, {
+    const spy = sinon.spy((params) => ({
       LastEvaluatedKey: { pk: '1', sk: 'thing' },
       Items: [{
         pk: '1',
@@ -174,7 +174,7 @@ describe('connectors/dynamodb.js', () => {
   });
 
   it('should query - page 2', async () => {
-    const spy = sinon.spy((params, cb) => cb(null, {
+    const spy = sinon.spy((params) => ({
       Items: [{
         pk: '2',
         sk: 'thing',
@@ -238,7 +238,7 @@ describe('connectors/dynamodb.js', () => {
       },
     ];
 
-    const spy = sinon.spy((params, cb) => cb(null, responses.shift()));
+    const spy = sinon.spy((params) => (responses.shift()));
     mockDdb.on(QueryCommand).callsFake(spy);
 
     const data = await new Connector(debug('db'), 't1')
