@@ -2,17 +2,14 @@ import 'mocha';
 import { expect } from 'chai';
 
 import { toKinesisRecords, toSqsEventRecords } from 'aws-lambda-stream';
+import lambdaTest from 'aws-lambda-stream/utils/lambda-test';
 
-import { handle } from '../../../src/listener';
+const invoke = lambdaTest({ functionName: `${process.env.npm_package_name}-dev-listener` });
 
 describe('listener/index.js', () => {
-  before(() => {
-    require('baton-vcr-replay-for-aws-sdk'); // eslint-disable-line global-require
-  });
-
   it('should test listener integration', async () => {
-    const res = await handle(EVENT, {}, { AES: false });
-    expect(res).to.equal('Success');
+    const res = await invoke(EVENT);
+    expect(res.Payload).toEqual('Success');
   });
 });
 

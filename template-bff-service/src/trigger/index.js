@@ -2,7 +2,7 @@ import {
   initialize,
   initializeFrom,
   defaultOptions,
-  decryptEvent,
+  decryptChangeEvent,
   fromDynamodb,
   toPromise,
 } from 'aws-lambda-stream';
@@ -26,7 +26,7 @@ export class Handler {
     return initialize(PIPELINES, this.options)
       .assemble(
         fromDynamodb(event)
-          .through(decryptEvent({
+          .through(decryptChangeEvent({
             ...this.options,
           })),
         includeErrors,

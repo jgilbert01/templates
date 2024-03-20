@@ -1,10 +1,14 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
-import { config, DynamoDB } from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+  UpdateCommand,
+} from '@aws-sdk/lib-dynamodb';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import Promise from 'bluebird';
 import _ from 'highland';
 import { updateExpression } from 'aws-lambda-stream';
-
-config.setPromisesDependency(Promise);
 
 class Connector {
   constructor(
@@ -14,12 +18,13 @@ class Connector {
   ) {
     this.debug = (msg) => debug('%j', msg);
     this.tableName = tableName || /* istanbul ignore next */ 'undefined';
-    this.db = new DynamoDB.DocumentClient({
-      httpOptions: {
-        timeout,
-      },
+    this.db = DynamoDBDocumentClient.from(new DynamoDBClient({
+      requestHandler: new NodeHttpHandler({
+        requestTimeout: timeout,
+        connectionTimeout: timeout,
+      }),
       logger: { log: /* istanbul ignore next */ (msg) => debug('%s', msg.replace(/\n/g, '\r')) },
-    });
+    }));
   }
 
   update(Key, inputParams) {
@@ -29,7 +34,7 @@ class Connector {
       ...updateExpression(inputParams),
     };
 
-    return this.db.update(params).promise()
+    return this._executeCommand(new UpdateCommand(params))
       .tap(this.debug)
       .tapCatch(this.debug);
   }
@@ -54,7 +59,7 @@ class Connector {
       ConsistentRead: !IndexName,
     };
 
-    return this.db.query(params).promise()
+    return this._executeCommand(new QueryCommand(params))
       .tap(this.debug)
       .tapCatch(this.debug)
       .then((data) => data.Items);
@@ -92,7 +97,7 @@ class Connector {
 
     return _((push, next) => {
       params.ExclusiveStartKey = cursor;
-      return this.db.query(params).promise()
+      return this._executeCommand(new QueryCommand(params))
         .tap(this.debug)
         .tapCatch(this.debug)
         .then((data) => {
@@ -158,7 +163,7 @@ class Connector {
 
     return _((push, next) => {
       params.ExclusiveStartKey = cursor;
-      return this.db.query(params).promise()
+      return this._executeCommand(new QueryCommand(params))
         .tap(this.debug)
         .tapCatch(this.debug)
         .then((data) => {
@@ -186,6 +191,12 @@ class Connector {
       .collect()
       .map((data) => ({ data }))
       .toPromise(Promise);
+  }
+
+  _executeCommand(command) {
+    return Promise.resolve(this.db.send(command))
+      .tap(this.debug)
+      .tapCatch(this.debug);
   }
 }
 
