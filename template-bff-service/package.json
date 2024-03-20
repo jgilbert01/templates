@@ -109,7 +109,7 @@
     "@smithy/util-retry": "^2.1.1",
     "@smithy/util-stream": "^2.1.1",
     "aws-kms-ee": "^1.0.0",
-    "aws-lambda-stream": "^1.0.2",
+    "aws-lambda-stream": "^1.0.3",
     "bluebird": "^3.7.2",
     "debug": "^4.3.4",
     "highland": "^2.13.5",
