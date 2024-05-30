@@ -7,7 +7,7 @@ provider:
     deploymentRole: ${file(serverless/cfn.yml):deploymentRole}
     role: ${file(serverless/iam.yml):role}
   stackTags: ${file(serverless/tags.yml)}
-  runtime: nodejs16.x
+  runtime: nodejs20.x
   logRetentionInDays: ${param:logRetentionInDays}
   environment: ${file(serverless/config.yml):environment}
   endpointType: REGIONAL
@@ -23,7 +23,6 @@ plugins:
   # - serverless-kinesis-esm-plugin
   # - serverless-secrets-mgr-plugin
   - serverless-webpack
-  - baton-vcr-serverless-plugin
   - serverless-offline
 
 functions:
