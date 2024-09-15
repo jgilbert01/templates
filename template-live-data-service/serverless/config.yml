@@ -1,0 +1,23 @@
+params:
+  stg:
+    debug: '*'
+    account: dev # nonprod
+  prd:
+    debug: ''
+    account: prod
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_PARTITION: ${self:custom.partition}
+  AWS_ACCOUNT_NUMBER: ${aws:accountId}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  TOPIC_ARN: arn:${self:custom.partition}:sns:${opt:region}:${aws:accountId}:${self:service}-${opt:stage}
+    # Ref: Topic
+  # USER_POOL: ${cf(us-west-2):${self:custom.subsys}-cognito-resources-${opt:stage}.userPoolArn}
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
+  # KMS_REGIONS: us-east-1,us-west-2
+

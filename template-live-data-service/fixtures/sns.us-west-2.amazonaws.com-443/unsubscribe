@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sns.us-west-2.amazonaws.com
+body: Action=Unsubscribe&SubscriptionArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Atemplate-live-data-service-stg%3Aa21b9690-7190-5b0b-860e-cbfd3cdb5567&Version=2010-03-31
+
+HTTP/1.1 200 OK
+x-amzn-requestid: dcb4fac0-b96b-5113-87e4-a7aeb99ea9b0
+content-type: text/xml
+content-length: 201
+date: Sun, 03 Sep 2023 03:34:13 GMT
+
+<UnsubscribeResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+  <ResponseMetadata>
+    <RequestId>dcb4fac0-b96b-5113-87e4-a7aeb99ea9b0</RequestId>
+  </ResponseMetadata>
+</UnsubscribeResponse>

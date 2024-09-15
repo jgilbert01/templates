@@ -1,0 +1,13 @@
+POST /
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sqs.us-west-2.amazonaws.com
+body: Action=ReceiveMessage&QueueUrl=https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F123456789012%2Flvd-stg-sub1&Version=2012-11-05&WaitTimeSeconds=20
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 92931273-5c81-5409-a41b-4f1e0780dbe6
+date: Sat, 02 Sep 2023 15:46:09 GMT
+content-type: text/xml
+content-length: 1162
+connection: keep-alive
+
+<?xml version="1.0"?><ReceiveMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><ReceiveMessageResult><Message><MessageId>e9fd559d-ca23-4515-b24a-4adf471799f1</MessageId><ReceiptHandle>AQEBvi77N8ma7KK8ad+oJZeyPeVmZTo8/5nTUEOk5KoJGloQFZwYaREST9w8pC2syAxi/6GL1T6wdhjq+2gHKhVnTkz6m54qS7sZoSqkoqhpkJj4s1kNLyqztaGYzf7eE1cmDOTWukYiJ/Tz1F5m00iDBH3wPG4pR1OQcBpDFp/UTAy8xGnX5yx9rGZ2HNk2d+myRhFQh0TE0uazP5XSBJAdnpid/XuibpuMso1LVGnOxbNh+8uivX6SqsWGGT/Kndx8z3JwdOjLxv18VdvjGWe4s8K5IXo4eZYlm/+kUhMlQRzd7Te8zXIKC1P/YM2Cal4uJ9gurtAYk7gu17Puq4iQqxBS1FB8UHChzbQ/j7E9A+hurDi+RU3Z40vmC4p9+6m3tuKY8/3sLCvea8D+gSygNQ==</ReceiptHandle><MD5OfBody>dd755e97573e3862b4a7505d5ed8f687</MD5OfBody><Body>{&quot;id&quot;:&quot;1&quot;,&quot;type&quot;:&quot;task-updated&quot;,&quot;tags&quot;:{&quot;source&quot;:&quot;template-task-service&quot;},&quot;raw&quot;:{&quot;new&quot;:{&quot;id&quot;:&quot;1&quot;,&quot;type&quot;:&quot;t0&quot;,&quot;status&quot;:&quot;s1&quot;,&quot;timestamp&quot;:1693236475001}}}</Body></Message></ReceiveMessageResult><ResponseMetadata><RequestId>92931273-5c81-5409-a41b-4f1e0780dbe6</RequestId></ResponseMetadata></ReceiveMessageResponse>

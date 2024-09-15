@@ -1,0 +1,8 @@
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - sqs:CreateQueue
+    - sqs:DeleteQueue
+    - sqs:ReceiveMessage
+    - sqs:DeleteMessage
+  Resource: 'arn:${self:custom.partition}:sqs:${opt:region}:${aws:accountId}:lvd-${opt:stage}-*'
