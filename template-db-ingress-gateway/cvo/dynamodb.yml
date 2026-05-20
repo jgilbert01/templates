@@ -1,0 +1,94 @@
+tableArn:
+  us-west-2:
+    Fn::GetAtt: [ EntitiesTable, Arn ]
+  us-east-1: # ${awsdesc:DynamoDB.describeTable.TableName.${self:provider.environment.ENTITY_TABLE_NAME}.Table.TableArn}
+    Fn::GetAtt: [ EntitiesTable, Arn ]
+
+tableStreamArn:
+  us-west-2:
+    Fn::GetAtt: [ EntitiesTable, StreamArn ]
+  us-east-1: # ${awsdesc:DynamoDB.describeTable.TableName.${self:provider.environment.ENTITY_TABLE_NAME}.Table.LatestStreamArn}
+    Fn::GetAtt: [ EntitiesTable, StreamArn ]
+
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - dynamodb:Query
+    - dynamodb:GetItem
+    - dynamodb:UpdateItem
+    - dynamodb:PutItem
+  Resource:
+    - ${self:custom.tableArn}
+    - Fn::Join:
+        - '/'
+        - - ${self:custom.tableArn}
+          - index
+          - gsi1        
+
+filterPatterns:
+  - eventName: [ INSERT, MODIFY ]
+    dynamodb:
+      NewImage:
+        awsregion:
+          S:
+            - ${opt:region}
+  - eventName: [ REMOVE ]
+    dynamodb:
+      OldImage:
+        awsregion:
+          S:
+            - ${opt:region}
+
+resources:
+  Resources:
+    EntitiesTable:
+      Type: AWS::DynamoDB::GlobalTable
+      Condition: IsWest # west will own global tables based on order of deployment
+      # DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.ENTITY_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+          - AttributeName: discriminator
+            AttributeType: S
+          # - AttributeName: data
+          #   AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: gsi1
+            KeySchema:
+              - AttributeName: discriminator
+                KeyType: HASH
+              - AttributeName: pk
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        #   - IndexName: gsi2
+        #     KeySchema:
+        #       - AttributeName: discriminator
+        #         KeyType: HASH
+        #       - AttributeName: data
+        #         KeyType: RANGE
+        #     Projection:
+        #       ProjectionType: ALL
+        Replicas:
+          # - Region: ${opt:region} # when not replicating
+          - Region: us-west-2
+            # PointInTimeRecoverySpecification:
+            #   PointInTimeRecoveryEnabled: true
+          - Region: us-east-1
+        BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        SSESpecification:
+          SSEEnabled: true
