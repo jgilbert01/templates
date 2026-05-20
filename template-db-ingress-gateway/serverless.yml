@@ -1,0 +1,45 @@
+service: template-db-ingress-gateway
+
+provider:
+  name: aws  
+  deploymentBucket: ${file(cvo/cfn.yml):deploymentBucket}
+  iam:
+    # deploymentRole: ${file(cvo/cfn.yml):deploymentRole}
+    role: ${file(cvo/iam.yml):role}
+  stackTags: ${file(cvo/tags.yml)}
+  runtime: nodejs20.x
+  logRetentionInDays: ${param:logRetentionInDays}
+  environment: ${file(cvo/config.yml):environment}
+
+params: ${file(cvo/config.yml):params}
+custom: ${file(cvo/config.yml):custom}
+
+functions:
+  listener:
+    handler: src/listener/index.handle
+    events:
+      - stream:
+          type: kinesis
+          arn: ${{self:provider.environment.INGRESS_STREAM_ARN}}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  trigger:
+    handler: src/trigger/index.handle
+    # timeout: 120
+    # memorySize: 2048
+    events:
+      - stream:
+          type: dynamodb
+          arn: ${self:custom.tableStreamArn}
+          batchSize: 50
+          startingPosition: TRIM_HORIZON
+          filterPatterns: ${file(cvo/dynamodb.yml):filterPatterns}
+  load:
+    handler: src/load/index.handle
+    # timeout: 240
+    # memorySize: 2048
+    # vpc: ${file(includes.yml):Vpc}
+
+resources:
+  - ${file(cvo/dynamodb.yml):resources}
+  - ${file(cvo/conditions.yml)}

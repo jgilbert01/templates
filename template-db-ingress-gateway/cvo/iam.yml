@@ -1,0 +1,7 @@
+role:
+  permissionsBoundary: arn:${self:custom.partition}:iam::${aws:accountId}:policy/${self:custom.subsys}-boundary-${opt:stage}
+  statements:
+    - ${file(cvo/dynamodb.yml):iamRoleStatements}
+    - ${file(cvo/bus.yml):iamRoleStatements}
+    # - ${file(cvo/secrets.yml):iamRoleStatements}
+    # - ${file(cvo/kms.yml):iamRoleStatements}

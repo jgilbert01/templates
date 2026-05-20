@@ -1,0 +1,41 @@
+params:
+  stg:
+    debug: '*'
+    account: stg # nonprod
+    logRetentionInDays: 3
+  prd:
+    debug: ''
+    account: prod
+    logRetentionInDays: 30
+ 
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  # webpack:
+  #   isLegacy: true
+  #   includeModules:
+  #     forceExclude:
+  #       - '@aws-sdk/client-dynamodb'
+  #       - '@aws-sdk/lib-dynamodb'
+  tableArn: ${file(cvo/dynamodb.yml):tableArn.${opt:region}}
+  tableStreamArn: ${file(cvo/dynamodb.yml):tableStreamArn.${opt:region}}
+  failover:
+    us-west-2: us-east-1
+    us-east-1: us-west-2 
+
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  ENTITY_TABLE_NAME: ${self:service}-${opt:stage}-entities
+  # ENTITY_DATA_INDEX: gsi1
+  BUS_NAME: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busName, 'unknown'}
+  BUS_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.busArn, 'unknown'}
+  STREAM_ARN: ${cf:${self:custom.subsys}-event-hub-${opt:stage}.stream1Arn, 'unknown'}
+  FAILOVER_REGION: ${self:custom.failover.${opt:region}}
+  # MASTER_KEY_ALIAS: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyAlias}
+  # MASTER_KEY_ARN: ${cf:${self:custom.subsys}-global-resources-${opt:stage}.MasterKeyArn}
+  # KMS_REGIONS: us-east-1,us-west-2

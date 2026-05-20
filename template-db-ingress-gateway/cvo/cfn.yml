@@ -1,0 +1,5 @@
+deploymentBucket: 
+  # name: ${self:custom.org}-${self:custom.subsys}-sls-deploy-${opt:stage}-${opt:region}
+  name: my-cvo-deploy-dev-us-west-2
+
+deploymentRole: arn:${aws:partition}:iam::${aws:accountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}
