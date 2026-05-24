@@ -1,0 +1,323 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 800 280" width="800" height="280">
+
+  <defs>
+    <marker id="a0" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#555"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#42a5f5"/>
+    </marker>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- TITLE -->
+  <text x="400" y="22" text-anchor="middle"
+        font-family="monospace" font-size="14" font-weight="bold"
+        fill="#42a5f5" letter-spacing="4">REPLAY</text>
+
+  <!--
+    dur="17.6s"  |  8 windows × 2.2s = step_width=0.125
+    S1       0.000–0.125  Browser   → API GW          (replay)
+    S2       0.125–0.250  API GW    → Lambda           (trigger)
+    S3       0.250–0.375  Lambda    → Events Table     (query)
+    S3b      0.375–0.500  Lambda    → SubsTable        (subs)
+    mid-pause 0.500–0.625
+    S4a      0.625–0.750  Lambda    → API GW           (events, return)
+    S4b      0.750–0.875  API GW    → Browser          (deliver, return)
+    end-pause 0.875–1.000
+
+    Internal offsets (per 0.125 window):
+      src_glow +0.011  dot_appear +0.023  arrow_on +0.028
+      travel   +0.034  arrive     +0.091  recv_glow +0.102
+      fade_end +0.114
+  -->
+
+  <!-- FORWARD ARROW LABELS (above arrows, y=124) -->
+  <text x="169" y="124" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">replay<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.028;0.034;0.091;0.102;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+  <text x="369" y="124" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">trigger<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.153;0.159;0.216;0.227;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+  <text x="555" y="88" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">query<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.278;0.284;0.341;0.352;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+  <text x="555" y="172" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">subs<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.403;0.409;0.466;0.477;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+
+  <!-- RETURN ARROW LABELS (below return lines, y=155) -->
+  <text x="369" y="155" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">events<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.653;0.659;0.716;0.727;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+  <text x="169" y="155" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">deliver<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.778;0.784;0.841;0.852;1"
+           calcMode="linear" dur="17.6s" repeatCount="indefinite"/></text>
+
+  <!-- STATIC CONNECTION LINES -->
+  <line x1="147" y1="135" x2="192" y2="135"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <line x1="347" y1="135" x2="392" y2="135"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <line x1="537" y1="118" x2="587" y2="70"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <line x1="537" y1="152" x2="587" y2="204"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <!-- return path dashed lines -->
+  <line x1="392" y1="141" x2="347" y2="141"
+        stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a0)"/>
+  <line x1="192" y1="141" x2="147" y2="141"
+        stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a0)"/>
+
+  <!-- COMPONENT BOXES -->
+
+  <!-- Browser: source S1, dest S4b -->
+  <rect x="10" y="95" width="135" height="80" rx="10"
+        fill="#0d2c14" stroke="#4CAF50" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#4CAF50;#4CAF50;#42a5f5;#42a5f5;#4CAF50;#4CAF50;#42a5f5;#42a5f5;#4CAF50;#4CAF50"
+             keyTimes="0;0.011;0.023;0.114;0.125;0.841;0.852;0.864;0.875;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2;3;3;2;2"
+             keyTimes="0;0.011;0.023;0.114;0.125;0.841;0.852;0.864;0.875;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="77" y="133" text-anchor="middle"
+        font-family="monospace" font-size="13" fill="#81C784">Browser</text>
+  <text x="77" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#66BB6A">Client</text>
+
+  <!-- API Gateway: dest S1, source S2, dest S4a, source S4b -->
+  <rect x="195" y="95" width="150" height="80" rx="10"
+        fill="#2e1700" stroke="#FF9800" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#FF9800;#FF9800;#42a5f5;#42a5f5;#FF9800;#FF9800;#42a5f5;#42a5f5;#FF9800;#FF9800"
+             keyTimes="0;0.091;0.102;0.239;0.250;0.716;0.727;0.864;0.875;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2;3;3;2;2"
+             keyTimes="0;0.091;0.102;0.239;0.250;0.716;0.727;0.864;0.875;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="270" y="133" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#FFB74D">WebSocket</text>
+  <text x="270" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#FFA726">API Gateway</text>
+
+  <!-- Lambda: dest S2, source S3/S3b/S4a (stays lit 0.227–0.739) -->
+  <rect x="395" y="95" width="140" height="80" rx="10"
+        fill="#1a0029" stroke="#9C27B0" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#9C27B0;#9C27B0;#42a5f5;#42a5f5;#9C27B0;#9C27B0"
+             keyTimes="0;0.216;0.227;0.739;0.750;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2"
+             keyTimes="0;0.216;0.227;0.739;0.750;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="465" y="133" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#CE93D8">Replay λ</text>
+  <text x="465" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#BA68C8">Lambda</text>
+
+  <!-- Events Table: dest S3 -->
+  <rect x="590" y="25" width="185" height="75" rx="10"
+        fill="#00151a" stroke="#00BCD4" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#00BCD4;#00BCD4;#42a5f5;#42a5f5;#00BCD4;#00BCD4"
+             keyTimes="0;0.341;0.352;0.364;0.375;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2"
+             keyTimes="0;0.341;0.352;0.364;0.375;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="682" y="57" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#80DEEA">Events Table</text>
+  <text x="682" y="75" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#4DD0E1">DynamoDB</text>
+
+  <!-- Subscriptions Table: dest S3b (now active) -->
+  <rect x="590" y="178" width="185" height="75" rx="10"
+        fill="#00151a" stroke="#00ACC1" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#00ACC1;#00ACC1;#42a5f5;#42a5f5;#00ACC1;#00ACC1"
+             keyTimes="0;0.466;0.477;0.489;0.500;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2"
+             keyTimes="0;0.466;0.477;0.489;0.500;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="682" y="210" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#80DEEA">Subscriptions Table</text>
+  <text x="682" y="228" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#4DD0E1">DynamoDB</text>
+
+  <!-- STEP DESCRIPTION TEXTS (y=194) -->
+  <text x="77" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Browser requests replay
+    <animate attributeName="opacity" values="0;1;1;0;0"
+             keyTimes="0;0.011;0.114;0.125;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="270" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">API GW triggers Lambda
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.136;0.148;0.239;0.250;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="465" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Lambda queries missed events
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.261;0.273;0.364;0.375;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="465" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Lambda checks subscriptions
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.386;0.398;0.489;0.500;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="465" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Lambda pushes events to API GW
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.636;0.648;0.739;0.750;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="270" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">API GW delivers events to browser
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.761;0.773;0.864;0.875;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- BLUE OVERLAY ARROWS + ANIMATED DOTS -->
+
+  <!-- S1: Browser → API GW (147,135)→(192,135) -->
+  <line x1="147" y1="135" x2="192" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.023;0.028;0.091;0.102;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.023;0.028;0.034;0.091;0.114;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.023;0.028;0.034;0.091;0.114;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M147,135 L192,135"/>
+  </circle>
+
+  <!-- S2: API GW → Lambda (347,135)→(392,135) -->
+  <line x1="347" y1="135" x2="392" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.148;0.153;0.216;0.227;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.148;0.153;0.159;0.216;0.239;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.148;0.153;0.159;0.216;0.239;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M347,135 L392,135"/>
+  </circle>
+
+  <!-- S3: Lambda → Events Table (537,118)→(587,70) -->
+  <line x1="537" y1="118" x2="587" y2="70"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.273;0.278;0.341;0.352;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.273;0.278;0.284;0.341;0.364;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.273;0.278;0.284;0.341;0.364;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M537,118 L587,70"/>
+  </circle>
+
+  <!-- S3b: Lambda → Subscriptions Table (537,152)→(587,204) -->
+  <line x1="537" y1="152" x2="587" y2="204"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.398;0.403;0.466;0.477;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.398;0.403;0.409;0.466;0.489;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.398;0.403;0.409;0.466;0.489;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M537,152 L587,204"/>
+  </circle>
+
+  <!-- S4a: Lambda → API GW return (392,135)→(347,135) -->
+  <line x1="392" y1="135" x2="347" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.648;0.653;0.716;0.727;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.648;0.653;0.659;0.716;0.739;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.648;0.653;0.659;0.716;0.739;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M392,135 L347,135"/>
+  </circle>
+
+  <!-- S4b: API GW → Browser return (192,135)→(147,135) -->
+  <line x1="192" y1="135" x2="147" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0"
+             keyTimes="0;0.773;0.778;0.841;0.852;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0"
+             keyTimes="0;0.773;0.778;0.784;0.841;0.864;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"/>
+    <animateMotion keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.773;0.778;0.784;0.841;0.864;1"
+             calcMode="linear" dur="17.6s" repeatCount="indefinite"
+             path="M192,135 L147,135"/>
+  </circle>
+
+</svg>

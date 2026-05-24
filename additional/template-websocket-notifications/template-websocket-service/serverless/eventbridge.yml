@@ -1,0 +1,58 @@
+functions:
+  broadcast:
+    handler: src/broadcast/index.handle
+    events:
+      - eventBridge:
+          eventBus: ${self:provider.environment.BUS_ARN}
+          pattern:
+            source:
+              - ${self:custom.source}
+
+resources:
+  Resources: {}
+
+# ---------------------------------------------------------------
+# Multi-region upgrade: Uncomment the cross-region forwarding
+# rules below. Each region forwards matching events to the other
+# region's event bus. The tags.region filter prevents infinite
+# loops — only locally-originated events are forwarded.
+#
+# Also uncomment OTHER_REGION_BUS_ARN in config.yml and
+# conditions.yml in serverless.yml resources.
+# ---------------------------------------------------------------
+#
+# resources:
+#   Resources:
+#     CrossRegionForwardRuleWest:
+#       Type: AWS::Events::Rule
+#       Condition: IsWest
+#       Properties:
+#         EventBusName: ${self:provider.environment.BUS_NAME}
+#         EventPattern:
+#           detail-type:
+#             - ${self:provider.environment.EVENT_TYPE}
+#           detail:
+#             tags:
+#               region:
+#                 - us-west-2
+#         Targets:
+#           - Id: ForwardToEast
+#             Arn: ${self:provider.environment.OTHER_REGION_BUS_ARN}
+#             RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}
+#
+#     CrossRegionForwardRuleEast:
+#       Type: AWS::Events::Rule
+#       Condition: IsEast
+#       Properties:
+#         EventBusName: ${self:provider.environment.BUS_NAME}
+#         EventPattern:
+#           detail-type:
+#             - ${self:provider.environment.EVENT_TYPE}
+#           detail:
+#             tags:
+#               region:
+#                 - us-east-1
+#         Targets:
+#           - Id: ForwardToWest
+#             Arn: ${self:provider.environment.OTHER_REGION_BUS_ARN}
+#             RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${self:custom.subsys}-cfn-exec-${opt:stage}

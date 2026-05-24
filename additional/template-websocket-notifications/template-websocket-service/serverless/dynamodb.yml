@@ -1,0 +1,185 @@
+connectionsTableArn:
+  Fn::GetAtt: [ ConnectionsTable, Arn ]
+
+subscriptionsTableArn:
+  Fn::GetAtt: [ SubscriptionsTable, Arn ]
+
+eventsTableArn:
+  Fn::GetAtt: [ EventsTable, Arn ]
+
+iamRoleStatements:
+  Effect: Allow
+  Action:
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
+    - dynamodb:Query
+    - dynamodb:BatchWriteItem
+    - dynamodb:Scan
+  Resource:
+    - Fn::GetAtt: [ ConnectionsTable, Arn ]
+    - Fn::GetAtt: [ SubscriptionsTable, Arn ]
+    - Fn::Join:
+        - '/'
+        - - Fn::GetAtt: [ SubscriptionsTable, Arn ]
+          - index
+          - connectionId-index
+    - Fn::GetAtt: [ EventsTable, Arn ]
+
+resources:
+  Resources:
+    ConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      # DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CONNECTIONS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        SSESpecification:
+          SSEEnabled: true
+
+    SubscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      # DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.SUBSCRIPTIONS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: eventType
+            AttributeType: S
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: eventType
+            KeyType: HASH
+          - AttributeName: connectionId
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: connectionId-index
+            KeySchema:
+              - AttributeName: connectionId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        SSESpecification:
+          SSEEnabled: true
+
+    EventsTable:
+      Type: AWS::DynamoDB::Table
+      # DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.EVENTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: eventType
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: eventType
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        SSESpecification:
+          SSEEnabled: true
+
+    # ---------------------------------------------------------------
+    # Multi-region upgrade: Replace the three tables above with
+    # Global Tables. Deploy us-west-2 first (IsWest creates the
+    # tables), then us-east-1 (reuses replicas).
+    # Uncomment the block below and remove the regular tables above.
+    # Also uncomment conditions.yml in serverless.yml resources.
+    # ---------------------------------------------------------------
+    #
+    # ConnectionsTable:
+    #   Type: AWS::DynamoDB::GlobalTable
+    #   Condition: IsWest
+    #   Properties:
+    #     TableName: ${self:provider.environment.CONNECTIONS_TABLE}
+    #     AttributeDefinitions:
+    #       - AttributeName: connectionId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: connectionId
+    #         KeyType: HASH
+    #     Replicas:
+    #       - Region: us-west-2
+    #       - Region: us-east-1
+    #     BillingMode: PAY_PER_REQUEST
+    #     TimeToLiveSpecification:
+    #       AttributeName: ttl
+    #       Enabled: true
+    #     SSESpecification:
+    #       SSEEnabled: true
+    #
+    # SubscriptionsTable:
+    #   Type: AWS::DynamoDB::GlobalTable
+    #   Condition: IsWest
+    #   Properties:
+    #     TableName: ${self:provider.environment.SUBSCRIPTIONS_TABLE}
+    #     AttributeDefinitions:
+    #       - AttributeName: eventType
+    #         AttributeType: S
+    #       - AttributeName: connectionId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: eventType
+    #         KeyType: HASH
+    #       - AttributeName: connectionId
+    #         KeyType: RANGE
+    #     GlobalSecondaryIndexes:
+    #       - IndexName: connectionId-index
+    #         KeySchema:
+    #           - AttributeName: connectionId
+    #             KeyType: HASH
+    #         Projection:
+    #           ProjectionType: ALL
+    #     Replicas:
+    #       - Region: us-west-2
+    #       - Region: us-east-1
+    #     BillingMode: PAY_PER_REQUEST
+    #     TimeToLiveSpecification:
+    #       AttributeName: ttl
+    #       Enabled: true
+    #     SSESpecification:
+    #       SSEEnabled: true
+    #
+    # EventsTable:
+    #   Type: AWS::DynamoDB::GlobalTable
+    #   Condition: IsWest
+    #   Properties:
+    #     TableName: ${self:provider.environment.EVENTS_TABLE}
+    #     AttributeDefinitions:
+    #       - AttributeName: eventType
+    #         AttributeType: S
+    #       - AttributeName: timestamp
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: eventType
+    #         KeyType: HASH
+    #       - AttributeName: timestamp
+    #         KeyType: RANGE
+    #     Replicas:
+    #       - Region: us-west-2
+    #       - Region: us-east-1
+    #     BillingMode: PAY_PER_REQUEST
+    #     TimeToLiveSpecification:
+    #       AttributeName: ttl
+    #       Enabled: true
+    #     SSESpecification:
+    #       SSEEnabled: true

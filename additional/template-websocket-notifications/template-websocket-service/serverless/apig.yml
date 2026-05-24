@@ -1,0 +1,24 @@
+functions:
+  connect:
+    handler: src/connections/index.connect
+    events:
+      - websocket:
+          route: $connect
+  disconnect:
+    handler: src/connections/index.disconnect
+    events:
+      - websocket:
+          route: $disconnect
+  replay:
+    handler: src/connections/index.replay
+    events:
+      - websocket:
+          route: replay
+  subscribe:
+    handler: src/connections/index.subscribe
+    events:
+      - websocket:
+          route: subscribe
+
+resources:
+  Resources: {}

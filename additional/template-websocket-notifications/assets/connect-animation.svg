@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 800 280" width="800" height="280">
+
+  <defs>
+    <!-- Arrowhead — gray (static lines) -->
+    <marker id="a0" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#555"/>
+    </marker>
+    <!-- Arrowhead — blue (animated overlay) -->
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#42a5f5"/>
+    </marker>
+    <!-- Glow filter for traveling packet dot -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── TITLE ── -->
+  <text x="400" y="22" text-anchor="middle"
+        font-family="monospace" font-size="14" font-weight="bold"
+        fill="#42a5f5" letter-spacing="4">CONNECT</text>
+
+  <!-- ── STEP LABELS (static, small gray) ── -->
+  <text x="169" y="124" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">$connect<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.056;0.072;0.100;0.222;0.244;1"
+           calcMode="linear" dur="9s" repeatCount="indefinite"/></text>
+  <text x="369" y="124" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">trigger<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.389;0.411;0.444;0.556;0.578;1"
+           calcMode="linear" dur="9s" repeatCount="indefinite"/></text>
+  <text x="549" y="90" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">write<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.728;0.756;0.867;0.889;0.922;1"
+           calcMode="linear" dur="9s" repeatCount="indefinite"/></text>
+  <text x="549" y="185" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#777">write<animate attributeName="fill"
+           values="#777;#777;#42a5f5;#42a5f5;#42a5f5;#777;#777"
+           keyTimes="0;0.728;0.756;0.867;0.889;0.922;1"
+           calcMode="linear" dur="9s" repeatCount="indefinite"/></text>
+
+  <!-- ── STATIC CONNECTION LINES (gray base) ── -->
+  <!-- Browser → API Gateway -->
+  <line x1="147" y1="135" x2="192" y2="135"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <!-- API Gateway → Lambda -->
+  <line x1="347" y1="135" x2="392" y2="135"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <!-- Lambda → ConnectionsTable -->
+  <line x1="537" y1="118" x2="587" y2="70"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+  <!-- Lambda → SubscriptionsTable -->
+  <line x1="537" y1="152" x2="587" y2="204"
+        stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+
+  <!-- ── COMPONENT BOXES ── -->
+
+  <!-- Browser / Client — green; border pulses blue when sending -->
+  <rect x="10" y="95" width="135" height="80" rx="10"
+        fill="#0d2c14" stroke="#4CAF50" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#4CAF50;#42a5f5;#42a5f5;#4CAF50;#4CAF50"
+             keyTimes="0;0.022;0.222;0.256;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;3;3;2;2"
+             keyTimes="0;0.022;0.222;0.256;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="77" y="133" text-anchor="middle"
+        font-family="monospace" font-size="13" fill="#81C784">Browser</text>
+  <text x="77" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#66BB6A">Client</text>
+
+  <!-- Step description texts below Browser box -->
+  <text x="77" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Browser opens WebSocket
+    <animate attributeName="opacity"
+             values="0;1;1;0;0"
+             keyTimes="0;0.011;0.267;0.278;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="270" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">API GW triggers Lambda
+    <animate attributeName="opacity"
+             values="0;0;1;1;0;0"
+             keyTimes="0;0.356;0.367;0.633;0.644;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="465" y="194" text-anchor="middle"
+        font-family="monospace" font-size="8.5" fill="#42a5f5" opacity="0">Lambda writes to DynamoDB
+    <animate attributeName="opacity"
+             values="0;0;1;1;0;0"
+             keyTimes="0;0.689;0.700;0.933;0.944;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- API Gateway WebSocket — orange; flashes blue on receive, then again as sender -->
+  <rect x="195" y="95" width="150" height="80" rx="10"
+        fill="#2e1700" stroke="#FF9800" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#FF9800;#FF9800;#42a5f5;#42a5f5;#FF9800;#FF9800;#42a5f5;#42a5f5;#FF9800;#FF9800"
+             keyTimes="0;0.222;0.244;0.311;0.333;0.356;0.378;0.556;0.578;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2;3;3;2;2"
+             keyTimes="0;0.222;0.244;0.311;0.333;0.356;0.378;0.556;0.578;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="270" y="133" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#FFB74D">WebSocket</text>
+  <text x="270" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#FFA726">API Gateway</text>
+
+  <!-- Connect Lambda — purple; border pulses blue on arrival -->
+  <rect x="395" y="95" width="140" height="80" rx="10"
+        fill="#1a0029" stroke="#9C27B0" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#9C27B0;#9C27B0;#42a5f5;#42a5f5;#9C27B0;#9C27B0;#42a5f5;#42a5f5;#9C27B0;#9C27B0"
+             keyTimes="0;0.556;0.578;0.622;0.644;0.667;0.689;0.867;0.889;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2;3;3;2;2"
+             keyTimes="0;0.556;0.578;0.622;0.644;0.667;0.689;0.867;0.889;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="465" y="133" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#CE93D8">Connect λ</text>
+  <text x="465" y="153" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#BA68C8">Lambda</text>
+
+  <!-- DynamoDB ConnectionsTable — teal -->
+  <rect x="590" y="25" width="185" height="75" rx="10"
+        fill="#00151a" stroke="#00BCD4" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#00BCD4;#00BCD4;#42a5f5;#42a5f5;#00BCD4;#00BCD4"
+             keyTimes="0;0.867;0.889;0.922;0.944;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2"
+             keyTimes="0;0.867;0.889;0.922;0.944;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="682" y="57" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#80DEEA">Connections Table</text>
+  <text x="682" y="75" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#4DD0E1">DynamoDB</text>
+
+  <!-- DynamoDB SubscriptionsTable — teal (slightly different border) -->
+  <rect x="590" y="178" width="185" height="75" rx="10"
+        fill="#00151a" stroke="#00ACC1" stroke-width="2">
+    <animate attributeName="stroke"
+             values="#00ACC1;#00ACC1;#42a5f5;#42a5f5;#00ACC1;#00ACC1"
+             keyTimes="0;0.867;0.889;0.922;0.944;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width"
+             values="2;2;3;3;2;2"
+             keyTimes="0;0.867;0.889;0.922;0.944;1"
+             calcMode="linear" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="682" y="210" text-anchor="middle"
+        font-family="monospace" font-size="12" fill="#80DEEA">Subscriptions Table</text>
+  <text x="682" y="228" text-anchor="middle"
+        font-family="monospace" font-size="11" fill="#4DD0E1">DynamoDB</text>
+
+  <!-- ══════════════════════════════════════════════════════════════════ -->
+  <!-- ANIMATION — Steps 1–4 (9s cycle)                                -->
+  <!-- STEP 1 — Browser ──► API Gateway ($connect)                      -->
+  <!--   0.0–0.2s   Browser border green → blue (sending)               -->
+  <!--   0.5–0.65s  dot 1 appears at x=147, stationary                  -->
+  <!--   0.9–2.0s   dot 1 travels to x=192; Browser dims; API GW flashes -->
+  <!-- STEP 2 — API Gateway ──► Lambda (trigger)                        -->
+  <!--   2.8–3.0s   API GW dims back (brief gap)                        -->
+  <!--   3.2–3.4s   API GW turns blue again (sending)                   -->
+  <!--   3.5–5.0s   dot 2 travels to x=392; API GW dims; Lambda flashes -->
+  <!-- STEPS 3 & 4 — Lambda ──► Connections + Subscriptions (write)    -->
+  <!--   6.0–6.2s   Lambda re-lights blue (sender)                      -->
+  <!--   6.4–6.55s  dots 3 & 4 appear simultaneously at arrow starts    -->
+  <!--   6.8–7.8s   dots travel diagonally to both DynamoDB tables      -->
+  <!--   7.8–8.0s   Lambda dims; both tables flash blue                 -->
+  <!--   8.3–8.5s   dots fade; tables return to teal; pause to 9.0s     -->
+  <!-- ══════════════════════════════════════════════════════════════════ -->
+
+  <!-- Blue arrow 1 highlight ($connect) -->
+  <line x1="147" y1="135" x2="192" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.056;0.072;0.100;0.222;0.244;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Packet dot 1: Browser → API Gateway -->
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.056;0.072;0.100;0.222;0.278;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+    <animateMotion
+             keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.056;0.072;0.100;0.222;0.278;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"
+             path="M147,135 L192,135"/>
+  </circle>
+
+  <!-- Blue arrow 2 highlight (trigger) -->
+  <line x1="347" y1="135" x2="392" y2="135"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.389;0.411;0.444;0.556;0.578;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Packet dot 2: API Gateway → Lambda -->
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.389;0.411;0.444;0.556;0.589;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+    <animateMotion
+             keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.389;0.411;0.444;0.556;0.589;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"
+             path="M347,135 L392,135"/>
+  </circle>
+
+  <!-- Blue arrow 3 highlight (write → ConnectionsTable) -->
+  <line x1="537" y1="118" x2="587" y2="70"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.922;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Blue arrow 4 highlight (write → SubscriptionsTable) -->
+  <line x1="537" y1="152" x2="587" y2="204"
+        stroke="#42a5f5" stroke-width="2.5" marker-end="url(#ab)" opacity="0">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.922;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Packet dot 3: Lambda → ConnectionsTable -->
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.944;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+    <animateMotion
+             keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.944;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"
+             path="M537,118 L587,70"/>
+  </circle>
+
+  <!-- Packet dot 4: Lambda → SubscriptionsTable -->
+  <circle cx="0" cy="0" r="7" fill="#42a5f5" filter="url(#glow)">
+    <animate attributeName="opacity"
+             values="0;0;1;1;1;0;0"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.944;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"/>
+    <animateMotion
+             keyPoints="0;0;0;0;1;1;1"
+             keyTimes="0;0.728;0.756;0.867;0.889;0.944;1"
+             calcMode="linear"
+             dur="9s" repeatCount="indefinite"
+             path="M537,152 L587,204"/>
+  </circle>
+
+</svg>

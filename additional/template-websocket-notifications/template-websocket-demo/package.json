@@ -1,0 +1,17 @@
+{
+  "name": "template-websocket-demo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "End-to-end demo for the WebSocket notification system",
+  "scripts": {
+    "emit": "node src/emit.js",
+    "deploy:bus": "npx serverless deploy --stage np --region us-west-2",
+    "remove:bus": "npx serverless remove --stage np --region us-west-2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^4.0.0"
+  }
+}

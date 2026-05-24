@@ -1,0 +1,42 @@
+params:
+  np:
+    debug: '*'
+    account: np
+    logRetentionInDays: 3
+  prd:
+    debug: ''
+    account: prod
+    logRetentionInDays: 30
+
+custom:
+  partition: aws
+  org: my
+  subsys: template
+  source: template-websocket-demo
+  busStack: template-websocket-demo-bus
+environment:
+  ACCOUNT_NAME: ${param:account}
+  PROJECT: ${self:service}
+  STAGE: ${opt:stage}
+  DEBUG: ${param:debug}
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  CONNECTIONS_TABLE: ${self:service}-${opt:stage}-connections
+  SUBSCRIPTIONS_TABLE: ${self:service}-${opt:stage}-subscriptions
+  EVENTS_TABLE: ${self:service}-${opt:stage}-events
+  WEBSOCKET_ENDPOINT:
+    Fn::Join:
+      - ''
+      - - 'https://'
+        - Ref: WebsocketsApi
+        - '.execute-api.'
+        - Ref: AWS::Region
+        - '.amazonaws.com/'
+        - ${opt:stage}
+  EVENT_TYPE: ${param:eventType, '.*'}
+  EVENT_TTL_SECONDS: 1800
+  CONNECTION_TTL_SECONDS: 7200
+  BUS_NAME: ${cf:${self:custom.busStack}-${opt:stage}.busName}
+  BUS_ARN: ${cf:${self:custom.busStack}-${opt:stage}.busArn}
+  # Multi-region upgrade: uncomment to enable cross-region forwarding
+  # OTHER_REGION_BUS_ARN: ${cf(us-east-1):${self:custom.subsys}-event-bus-${opt:stage}.busArn}  # when deploying us-west-2
+  # OTHER_REGION_BUS_ARN: ${cf(us-west-2):${self:custom.subsys}-event-bus-${opt:stage}.busArn}  # when deploying us-east-1

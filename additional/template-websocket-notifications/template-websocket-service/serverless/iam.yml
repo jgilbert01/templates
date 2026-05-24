@@ -1,0 +1,9 @@
+role:
+  statements:
+    - ${file(serverless/dynamodb.yml):iamRoleStatements}
+    - ${file(serverless/bus.yml):iamRoleStatements}
+    - Effect: Allow
+      Action:
+        - execute-api:ManageConnections
+      Resource:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebsocketsApi}/*/@connections/*

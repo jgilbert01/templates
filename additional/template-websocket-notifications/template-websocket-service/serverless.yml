@@ -1,0 +1,40 @@
+service: ${self:custom.subsys}-websocket-service
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    external:
+      - aws-crt
+
+provider:
+  name: aws
+  iam:
+    role: ${file(serverless/iam.yml):role}
+  stackTags: ${file(serverless/tags.yml)}
+  runtime: nodejs22.x
+  logRetentionInDays: ${param:logRetentionInDays}
+  environment: ${file(serverless/config.yml):environment}
+  websocketsApiName: ${self:service}-${opt:stage}
+  websocketsApiRouteSelectionExpression: $request.body.action
+
+params: ${file(serverless/config.yml):params}
+custom: ${file(serverless/config.yml):custom}
+package:
+  individually: true
+
+plugins:
+  - serverless-offline
+
+functions:
+  connect: ${file(serverless/apig.yml):functions.connect}
+  disconnect: ${file(serverless/apig.yml):functions.disconnect}
+  replay: ${file(serverless/apig.yml):functions.replay}
+  subscribe: ${file(serverless/apig.yml):functions.subscribe}
+  broadcast: ${file(serverless/eventbridge.yml):functions.broadcast}
+
+resources:
+  - ${file(serverless/apig.yml):resources}
+  - ${file(serverless/dynamodb.yml):resources}
+  - ${file(serverless/eventbridge.yml):resources}
+  # - ${file(serverless/conditions.yml)} # uncomment for multi-region
